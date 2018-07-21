@@ -1,2 +1,2 @@
-# ffs
+# FFS
 Fast file searching tool for linux
