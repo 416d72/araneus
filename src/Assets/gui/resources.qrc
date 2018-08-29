@@ -1,5 +1,0 @@
-<RCC>
-  <qresource prefix="newPrefix">
-    <file>../icons/icon32.png</file>
-  </qresource>
-</RCC>
