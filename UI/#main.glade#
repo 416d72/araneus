@@ -108,8 +108,8 @@ Author: Amr Khamis
             <property name="can_focus">True</property>
             <property name="enable_tree_lines">True</property>
             <child internal-child="selection">
-              <object class="GtkTreeSelection">
-                <property name="mode">multiple</property>
+              <object class="GtkTreeSelection" id="tree_view_id">
+                <property name="mode">none</property>
               </object>
             </child>
             <child>
@@ -158,9 +158,9 @@ Author: Amr Khamis
           </packing>
         </child>
         <child>
-          <object class="GtkComboBoxText">
+          <object class="GtkTextView">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
@@ -169,9 +169,5 @@ Author: Amr Khamis
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkMenu">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
   </object>
 </interface>
