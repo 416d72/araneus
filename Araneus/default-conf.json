@@ -1,0 +1,20 @@
+{
+  "GENERAL": {
+    "LANGUAGE": "en",
+    "AUTO_START": false,
+    "START_MIN": false
+  },
+  "HISTORY": {
+    "REMEMBER": true,
+    "MAX_NUM": 10
+  },
+  "SEARCH": {
+    "SHOW_HIDDEN_FILES": true
+  },
+  "DATABASE": {
+    "AUTO_BUILD": false,
+    "BACKGROUND_BUILD": false,
+    "MIN_SIZE_CHECK": false,
+    "MIN_SIZE": 10
+  }
+}
