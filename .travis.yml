@@ -1,0 +1,7 @@
+language: python
+os: linux
+git:
+  quiet: true
+  submodules: false
+python:
+  - "3.6"
