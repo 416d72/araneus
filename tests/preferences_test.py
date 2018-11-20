@@ -1,7 +1,7 @@
 import unittest
+import json
 from Araneus.preferences import *
 
 
-class TestRead(unittest.TestCase):
-    def test_file_exists(self):
-        pass
+def test_os():
+    assert check_os() is True
