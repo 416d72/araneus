@@ -1,4 +1,5 @@
-import os
+from Araneus.preferences import *
 
-print(os.getcwd())
-print(os.getcwd() + os.sep + 'configurations' + os.sep + 'default-conf.json')
+print(Preferences().get_option("GENERAL", "LANGUAGE"))
+Preferences().set_option("GENERAL", "LANGUAGE", 'en')
+print(Preferences().get_option("GENERAL", "LANGUAGE"))
