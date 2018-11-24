@@ -1,5 +1,4 @@
-# Araneus
-A simple GNU/Linux GUI application that instantly locates you files.
+![Logo](Araneus/UI/icons/banner.png)
 # Dependencies:
 - Linux
 - Python3
