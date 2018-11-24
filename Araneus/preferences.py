@@ -3,7 +3,6 @@ import os
 from shutil import copy2
 from Araneus.helpers import *
 
-one_instance()
 config = configparser.ConfigParser()
 
 

@@ -4,6 +4,8 @@
 import os
 import sys
 
+lock_file = '/tmp/Araneus.lock'
+
 
 def check_os():
     """
@@ -20,10 +22,15 @@ def one_instance():
     :return: None | Error message
     """
     check_os()
-    if os.path.isfile('/tmp/Araneus.lock'):
+    if os.path.isfile(lock_file):
         sys.exit()
-    try:
-        with open('/tmp/Araneus.lock', 'w+'):
-            pass
-    except ValueError:
-        sys.exit(ValueError)
+    else:
+        try:
+            with open(lock_file, 'w+') as file:
+                file.write("Araneus Instance")
+        except ValueError:
+            sys.exit(ValueError)
+
+
+def load_ui(name):
+    return str(os.path.abspath(os.getcwd()) + '/UI/' + name + '.ui')
