@@ -1,3 +1,4 @@
+![Travis-ci](https://travis-ci.org/akkk33/araneus.svg?branch=master)
 ![Logo](Araneus/UI/icons/banner.png)
 # Dependencies:
 - Linux
