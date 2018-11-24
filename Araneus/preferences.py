@@ -6,15 +6,6 @@ from shutil import copy2
 config = configparser.ConfigParser()
 
 
-def check_os():
-    """
-    Checks if the current operating system is only Linux so that the app won't fail with others
-    :return: Bool
-    """
-    if sys.platform.startswith('linux'):
-        return True
-
-
 class Preferences:
     """
     Contains all methods for manipulate settings
@@ -50,15 +41,14 @@ class Preferences:
         Creates configurations file
         :return: Bool
         """
-        if not os.path.isfile(self.conf_file_path):
-            try:
-                self.create_config_dir()
-                copy2(self.std_conf_file_path, self.conf_file_path)
-                return True
-            except ValueError:
-                return ValueError
-        else:
+        if os.path.isfile(self.conf_file_path):
             return True
+        try:
+            self.create_config_dir()
+            copy2(self.std_conf_file_path, self.conf_file_path)
+            return True
+        except ValueError:
+            return ValueError
 
     def reset(self):
         """
@@ -68,10 +58,17 @@ class Preferences:
         try:
             self.create_config_file()
             copy2(self.std_conf_file_path, self.conf_file_path)
+            return True
         except ValueError:
             return "Couldn't reset settings!"
 
     def validate(self, section, option):
+        """
+        Checks if the configurations file contains the given option value
+        :param section: string
+        :param option: string
+        :return: None
+        """
         config.read(self.conf_file_path)
         if not config.has_option(section, option):
             self.reset()
@@ -93,5 +90,6 @@ class Preferences:
             config[section][option] = value
             with open(self.conf_file_path, 'w') as f:
                 config.write(f)
+            return self.get_option(section, option)
         except ValueError:
             raise ValueError("Error occurred while changing preferences")
