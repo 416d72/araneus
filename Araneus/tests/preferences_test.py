@@ -1,6 +1,6 @@
 import unittest
 
-from Araneus.preferences import *
+from Araneus.configurations import *
 
 
 class TestPreferences(unittest.TestCase):

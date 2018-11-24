@@ -3,6 +3,7 @@
 # LICENSE: see Araneus/LICENSE
 import os
 import sys
+from Araneus.configurations import *
 
 pid_file = '/tmp/Araneus.pid'
 

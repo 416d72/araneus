@@ -12,4 +12,5 @@ A simple GNU/Linux GUI application that instantly locates you files.
 - [GNU](https://www.gnu.org)
 - [Python Community](https://www.python.org/community/)
 - [QT](https://www.qt.io/)
-- [Riverbank](https://riverbankcomputing.com/software/pyqt/intro)
+- [Riverbank's PyQt5](https://riverbankcomputing.com/software/pyqt/intro)
+- [Jetbrains PyCharm](https://www.jetbrains.com/pycharm/)

@@ -4,7 +4,6 @@
 
 import webbrowser
 from Araneus.helpers import *
-from Araneus.preferences import *
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut
