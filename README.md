@@ -3,9 +3,9 @@ A simple GNU/Linux GUI application that instantly locates you files.
 # Dependencies:
 - Linux
 - Python3
-- PyQt5 
+- PyQt5
 # Installation:
-> Will be available in the first stable release
+> Instructions Will be available in the first stable release
 
 # Credits:
 - [Free software foundation](https://www.fsf.org/)
