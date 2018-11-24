@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="logo">
+    <file>logo.png</file>
+  </qresource>
+  <qresource prefix="banner">
+    <file>banner_360.png</file>
+    <file>banner.jpg</file>
+    <file>banner.png</file>
+  </qresource>
+</RCC>
