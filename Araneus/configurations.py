@@ -13,16 +13,25 @@ class Configurations:
     """
     Contains all methods for manipulate settings
     """
+    conf_dir = ''
+    conf_file_path = ''
+    std_conf_file_path = ''
 
     def __init__(self):
         """
         - Checking os platform first
         - Setting file paths
         """
-        self.conf_dir = str(os.path.expanduser("~")) + "/.config/Araneus/"
-        self.conf_file_path = self.conf_dir + "conf.ini"
-        self.std_conf_file_path = os.path.dirname(os.getcwd()) + '/configurations/' + 'default-conf.ini'
+        self.declare()
         self.create_config_file()
+
+    def declare(self):
+        try:
+            self.conf_dir = str(os.path.expanduser("~")) + "/.config/Araneus/"
+            self.conf_file_path = self.conf_dir + "conf.ini"
+            self.std_conf_file_path = os.path.dirname(os.getcwd()) + '/configurations/' + 'default-conf.ini'
+        except ValueError:
+            print(ValueError)
 
     def create_config_dir(self):
         """
@@ -32,11 +41,8 @@ class Configurations:
         if not os.path.exists(self.conf_dir):
             try:
                 os.mkdir(self.conf_dir)
-                return True
             except ValueError:
                 return ValueError
-        else:
-            return True
 
     def create_config_file(self):
         """
@@ -48,7 +54,6 @@ class Configurations:
         try:
             self.create_config_dir()
             copy2(self.std_conf_file_path, self.conf_file_path)
-            return True
         except ValueError:
             return ValueError
 
@@ -60,9 +65,8 @@ class Configurations:
         try:
             self.create_config_file()
             copy2(self.std_conf_file_path, self.conf_file_path)
-            return True
         except ValueError:
-            return "Couldn't reset settings!"
+            return ValueError
 
     def validate(self, section, option):
         """

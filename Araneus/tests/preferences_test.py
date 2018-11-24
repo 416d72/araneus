@@ -2,17 +2,21 @@ import unittest
 
 from Araneus.configurations import *
 
+configurations = Configurations()
+
 
 class TestPreferences(unittest.TestCase):
+    def test_declare(self):
+        configurations.declare()
 
     def test_create_config_dir(self):
-        self.assertEqual(Configurations().create_config_dir(), True)
+        configurations.create_config_dir()
 
     def test_create_config_file(self):
-        self.assertEqual(Configurations().create_config_file(), True)
+        configurations.create_config_file()
 
     def test_reset(self):
-        self.assertEqual(Configurations().reset(), True)
+        self.assertEqual(configurations.reset(), True)
 
 
 if __name__ == '__main__':
