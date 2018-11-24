@@ -109,7 +109,6 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionDonate"/>
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuFile"/>

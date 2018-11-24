@@ -12,9 +12,10 @@ class About(QDialog):
     def __init__(self):
         super(About, self).__init__()
         loadUi(load_ui('about'), self)
+        # self.buttonBox.accepted.connect(lambda: sys.exit())
         self.show()
 
 
 app = QApplication(sys.argv)
 pref = About()
-sys.exit(app.exec_())
+# sys.exit(app.exec_())

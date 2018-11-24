@@ -14,3 +14,4 @@ A simple GNU/Linux GUI application that instantly locates you files.
 - [QT](https://www.qt.io/)
 - [Riverbank's PyQt5](https://riverbankcomputing.com/software/pyqt/intro)
 - [Jetbrains PyCharm](https://www.jetbrains.com/pycharm/)
+>Logo was designed by CARLOS ALBERTO ESPITIA REYES from [pngtree.com](https://pngtree.com/freepng/vector-cartoon-black-spider_2441240.html)
