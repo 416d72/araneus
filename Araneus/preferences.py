@@ -1,3 +1,6 @@
+#!usr/bin/python3
+# -*- coding: utf-8; -*-
+# LICENSE: see Araneus/LICENSE
 import configparser
 import os
 from shutil import copy2
