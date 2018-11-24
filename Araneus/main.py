@@ -4,9 +4,7 @@
 
 import webbrowser
 from Araneus.helpers import *
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut
-from PyQt5.QtGui import QKeySequence, QKeyEvent
+from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.uic import loadUi
 
 
@@ -19,12 +17,11 @@ class Main(QMainWindow):
         self.show()
 
     def triggers(self):
-        self.actionQuit.triggered.connect(lambda: sys.exit(app.exec_()))
+        self.actionQuit.triggered.connect(lambda: sys.exit(QApplication(sys.argv).exec_()))
         self.actionPreferences.triggered.connect(self.preferences_dialog)
         self.actionBuild_All.triggered.connect(self.build_all_action)
         self.actionClean.triggered.connect(self.clean_all_action)
         self.actionAbout.triggered.connect(self.about_dialog)
-        self.actionDonate.triggered.connect(self.donate_url)
 
     def preferences_dialog(self):
         """
@@ -52,7 +49,7 @@ class Main(QMainWindow):
         Showing the about dialog
         :return: None
         """
-        from Araneus.about import About
+        import Araneus.about
 
     def donate_url(self):
         try:
@@ -61,6 +58,11 @@ class Main(QMainWindow):
             print("Something went wrong while opening the web browser:", Exception)
 
 
-app = QApplication(sys.argv)
-main_window = Main()
-sys.exit(app.exec_())
+def main():
+    app = QApplication(sys.argv)
+    main_window = Main()
+    sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    main()
