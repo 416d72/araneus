@@ -4,7 +4,6 @@
 
 import webbrowser
 from Araneus.helpers import *
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut
 from PyQt5.QtGui import QKeySequence, QKeyEvent
@@ -53,7 +52,7 @@ class Main(QMainWindow):
         Showing the about dialog
         :return: None
         """
-        print('about')
+        from Araneus.about import About
 
     def donate_url(self):
         try:
