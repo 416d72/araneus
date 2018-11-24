@@ -21,8 +21,7 @@ class Configurations:
         """
         self.conf_dir = str(os.path.expanduser("~")) + "/.config/Araneus/"
         self.conf_file_path = self.conf_dir + "conf.ini"
-        self.std_conf_file_path = str(os.path.dirname(os.getcwd()) + "/Araneus/" + '/configurations/' +
-                                      'default-conf.ini')
+        self.std_conf_file_path = os.path.dirname(os.getcwd()) + '/configurations/' + 'default-conf.ini'
         self.create_config_file()
 
     def create_config_dir(self):
