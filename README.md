@@ -1,11 +1,12 @@
-![Travis-ci](https://travis-ci.org/akkk33/araneus.svg?branch=master)[![Coverage Status](https://coveralls.io/repos/github/akkk33/araneus/badge.svg?branch=master)](https://coveralls.io/github/akkk33/araneus?branch=master)
+[![Build Status](https://travis-ci.org/akkk33/araneus.svg?branch=master)](https://travis-ci.org/akkk33/araneus)
+[![Coverage Status](https://coveralls.io/repos/github/akkk33/araneus/badge.svg?branch=master)](https://coveralls.io/github/akkk33/araneus?branch=master)
 ![Logo](Araneus/UI/icons/banner.png)
 # Dependencies:
 - Linux
 - Python3
 - PyQt5
 # Installation:
-> Instructions Will be available in the first stable release
+> Instructions will be available in the first stable release.
 
 # Credits:
 - [Free software foundation](https://www.fsf.org/)
