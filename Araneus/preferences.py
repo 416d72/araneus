@@ -3,7 +3,7 @@
 # LICENSE: see Araneus/LICENSE
 
 from Araneus.helpers import *
-
+from Araneus.configurations import *
 from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5.uic import loadUi
 
