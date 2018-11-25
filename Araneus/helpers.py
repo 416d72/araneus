@@ -3,7 +3,6 @@
 # LICENSE: see Araneus/LICENSE
 import os
 import sys
-from Araneus.configurations import *
 
 pid_file = '/tmp/Araneus.pid'
 
@@ -19,8 +18,8 @@ def check_os():
 
 def is_running():
     """
-        Allows for only one instance of the app by creating a .lock file in /tmp directory and checking if it exists
-        :return: None
+        Allows for only one instance of the app by creating a .pid file in /tmp directory and checking if it exists
+        :return: int or False
         """
     check_os()
     try:

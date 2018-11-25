@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="readme">
+    <file>README.md</file>
+  </qresource>
+  <qresource prefix="license">
+    <file>LICENSE</file>
+  </qresource>
+</RCC>
