@@ -14,10 +14,18 @@ Here are things that I learnt through out making this app
 - Checking what OS is currently running.
 - Allowing only one instance by creating a `.pid` file.
 - `lambda`, `with`, `if __name__ == "__main__"`
--  
+-  Using a helper file to use common functions in several scripts.
+- Opening a url in the default browser.
+- Figured out how to load several Qt windows thanks to this old answer [here](http://python.6.x6.nabble.com/QCoreApplication-exec-The-event-loop-is-already-running-tp1795366p1795378.html)
 
 And here are things that I'd like to learn deeper in the near future:
 -
 - Exception handling.
 - Multi processing.
 - Multi threading.
+- Test Driven Development.
+- Documentation.
+- Cryptography.
+- Security.
+- Advanced web scraping.
+- Live stream Face detection.

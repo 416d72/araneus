@@ -2,7 +2,6 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 
-import webbrowser
 from Araneus.helpers import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.uic import loadUi
@@ -16,6 +15,14 @@ class Main(QMainWindow):
 
         self.show()
 
+    def check_empty_db(self):
+        """
+        Checks if the database is empty and prompt the user to build it if empty.
+        TODO: Implement connection to database.py
+        :return: bool
+        """
+        pass
+
     def triggers(self):
         self.actionQuit.triggered.connect(lambda: sys.exit(QApplication(sys.argv).exec_()))
         self.actionPreferences.triggered.connect(self.preferences_dialog)
@@ -28,7 +35,8 @@ class Main(QMainWindow):
         Showing preferences dialog
         :return: None
         """
-        print("Preferences")
+        from Araneus.preferences import Preferences, new_window
+        new_window()
 
     def build_all_action(self):
         """
@@ -49,19 +57,14 @@ class Main(QMainWindow):
         Showing the about dialog
         :return: None
         """
-        import Araneus.about
-
-    def donate_url(self):
-        try:
-            webbrowser.open('https://github.com/akkk33/araneus')
-        except Exception:
-            print("Something went wrong while opening the web browser:", Exception)
+        from Araneus.about import About, new_window
+        new_window()
 
 
 def main():
-    app = QApplication(sys.argv)
+    main = QApplication(sys.argv)
     main_window = Main()
-    sys.exit(app.exec_())
+    sys.exit(main.exec_())
 
 
 if __name__ == "__main__":

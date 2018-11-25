@@ -2,7 +2,6 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 import configparser
-import os
 from shutil import copy2
 from Araneus.helpers import *
 
@@ -29,7 +28,8 @@ class Configurations:
         try:
             self.conf_dir = str(os.path.expanduser("~")) + "/.config/Araneus/"
             self.conf_file_path = self.conf_dir + "conf.ini"
-            self.std_conf_file_path = os.path.dirname(os.getcwd()) + '/configurations/' + 'default-conf.ini'
+            self.std_conf_file_path = os.path.dirname(os.getcwd()) + "/Araneus/configurations/default-conf.ini"
+            return True
         except ValueError:
             print(ValueError)
 
@@ -41,8 +41,10 @@ class Configurations:
         if not os.path.exists(self.conf_dir):
             try:
                 os.mkdir(self.conf_dir)
+                return True
             except ValueError:
                 return ValueError
+        return True
 
     def create_config_file(self):
         """
@@ -54,6 +56,7 @@ class Configurations:
         try:
             self.create_config_dir()
             copy2(self.std_conf_file_path, self.conf_file_path)
+            return True
         except ValueError:
             return ValueError
 
@@ -65,6 +68,7 @@ class Configurations:
         try:
             self.create_config_file()
             copy2(self.std_conf_file_path, self.conf_file_path)
+            return True
         except ValueError:
             return ValueError
 
@@ -78,6 +82,7 @@ class Configurations:
         config.read(self.conf_file_path)
         if not config.has_option(section, option):
             self.reset()
+        return True
 
     def get_option(self, section, option):
         """
