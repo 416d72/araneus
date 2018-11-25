@@ -88,3 +88,4 @@ env/
 # Pycharm
 .idea/
 tests/_trial_temp/
+tests/_trial_temp/*
