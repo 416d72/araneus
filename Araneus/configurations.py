@@ -118,7 +118,6 @@ class Configurations:
         except ValueError:
             raise ValueError("Error occurred while changing preferences")
 
-
 #
 # test = Configurations()
 # test.reset()

@@ -26,7 +26,7 @@ class TestPreferences(unittest.TestCase):
         self.assertIsInstance(conf.get_option('GENERAL', 'Language'), str)
 
     def test_set_option(self):
-        self.assertIsInstance(conf.set_option('GENERAL', 'Language', 'en'), str)
+        self.assertIsInstance(conf.set_option('GENERAL', 'Language', 0), str)
 
 
 if __name__ == '__main__':
