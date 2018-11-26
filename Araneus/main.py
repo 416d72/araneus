@@ -11,6 +11,10 @@ c = Configurations()
 
 
 class Main(QMainWindow):
+    view_col_modified = c.get_option('VIEW_COLUMNS', 'modified', 'bool')
+    view_col_created = c.get_option('VIEW_COLUMNS', 'created', 'bool')
+    view_col_type = c.get_option('VIEW_COLUMNS', 'type', 'bool')
+
     def __init__(self):
         super(Main, self).__init__()
         loadUi(load_ui('main_window'), self)
@@ -47,21 +51,30 @@ class Main(QMainWindow):
         Fetch current selected view columns
         :return: None
         """
-        self.actionModified.setChecked(c.get_option('VIEW_COLUMNS', 'modified', 'bool'))
-        self.actionCreated.setChecked(c.get_option('VIEW_COLUMNS', 'created', 'bool'))
-        self.actionType.setChecked(c.get_option('VIEW_COLUMNS', 'type', 'bool'))
+        self.actionModified.setChecked(self.view_col_modified)
+        self.actionCreated.setChecked(self.view_col_created)
+        self.actionType.setChecked(self.view_col_type)
 
     def set_view_columns(self):
         """
-        Save selected view columns in config file
+        Updates view columns on toggling settings
         :return: None
         """
-        self.actionModified.toggled.connect(lambda: c.set_option('VIEW_COLUMNS', 'modified',
-                                                                 self.actionModified.isChecked()))
-        self.actionCreated.toggled.connect(lambda: c.set_option('VIEW_COLUMNS', 'created',
-                                                                self.actionCreated.isChecked()))
-        self.actionType.toggled.connect(lambda: c.set_option('VIEW_COLUMNS', 'type',
-                                                             self.actionType.isChecked()))
+        self.actionModified.toggled.connect(lambda: self.update_view_columns())
+        self.actionCreated.toggled.connect(lambda: self.update_view_columns())
+        self.actionType.toggled.connect(lambda: self.update_view_columns())
+
+    def update_view_columns(self):
+        """
+        Updates configurations for selected view columns
+        :return: None
+        """
+        self.view_col_modified = self.actionModified.isChecked()
+        self.view_col_created = self.actionCreated.isChecked()
+        self.view_col_type = self.actionType.isChecked()
+        c.set_option('VIEW_COLUMNS', 'modified', self.view_col_modified)
+        c.set_option('VIEW_COLUMNS', 'created', self.view_col_created)
+        c.set_option('VIEW_COLUMNS', 'type', self.view_col_type)
 
     def build_all_action(self):
         """
