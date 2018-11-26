@@ -38,6 +38,7 @@ class Main(QMainWindow):
         self.actionClean.triggered.connect(self.clean_all_action)
         self.actionAbout.triggered.connect(self.about_dialog)
 
+    @staticmethod
     def preferences_dialog(self):
         """
         Showing preferences dialog
@@ -113,7 +114,7 @@ class Main(QMainWindow):
     @staticmethod
     def about_dialog(self):
         """
-        Showing the about dialog
+        Showing the about dialog | Influenced by the about dialog from 'Zeal' app
         :return: None
         """
         from Araneus.about import new_window
