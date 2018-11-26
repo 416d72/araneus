@@ -18,8 +18,8 @@ class Main(QMainWindow):
     def __init__(self):
         super(Main, self).__init__()
         loadUi(load_ui('main_window'), self)
-        self.triggers()
         self.get_view_columns()
+        self.triggers()
         self.set_view_columns()
         self.show()
 
@@ -110,6 +110,7 @@ class Main(QMainWindow):
         """
         print("Cleaned everything")
 
+    @staticmethod
     def about_dialog(self):
         """
         Showing the about dialog
