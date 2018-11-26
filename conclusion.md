@@ -14,6 +14,7 @@ Here are things that I learnt through out making this app
 - Allowing only one instance by creating a `.pid` file and handling it.
 - `lambda`, `with`, `if __name__ == "__main__"`
 - Opening a url in the default browser with `import webbrowser` and `webbrowser.open(url)`.
+- Prepend text to a file thanks to [this answer](https://stackoverflow.com/a/4454598/7301680).
 ### QT
 - Embedding shortcuts in QT designer app templates instead of using event listener in the controller.
 - Figured out how to load several Qt windows thanks to this old answer [here](http://python.6.x6.nabble.com/QCoreApplication-exec-The-event-loop-is-already-running-tp1795366p1795378.html)
