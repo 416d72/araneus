@@ -21,6 +21,7 @@ class Preferences(QDialog):
         loadUi(load_ui('preferences'), self)
         self.retrieve()
         self.state_change()
+        self.history_delete_btn.clicked.connect(lambda: self.clear_history())
         self.buttonBox.accepted.connect(lambda: self.save())
         self.show()
 
@@ -55,6 +56,13 @@ class Preferences(QDialog):
             self.history_remember.isChecked()))
         self.db_min_file_size_label.stateChanged.connect(lambda: self.db_min_file_size.setEnabled(
             self.db_min_file_size_label.isChecked()))
+
+    def clear_history(self):
+        """
+        Clears the history file
+        :return: None
+        """
+        print('clear')
 
     def save(self):
         """

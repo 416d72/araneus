@@ -23,7 +23,7 @@ def is_running():
         """
     check_os()
     try:
-        with open(pid_file) as f:
+        with open(pid_file, 'r') as f:
             pid = int(next(f))
         return os.kill(pid, 0)
     except Exception:
