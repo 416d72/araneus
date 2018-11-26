@@ -54,6 +54,7 @@ class Main(QMainWindow):
         self.actionModified.setChecked(self.view_col_modified)
         self.actionCreated.setChecked(self.view_col_created)
         self.actionType.setChecked(self.view_col_type)
+        self.refresh_list()
 
     def set_view_columns(self):
         """
@@ -75,6 +76,25 @@ class Main(QMainWindow):
         c.set_option('VIEW_COLUMNS', 'modified', self.view_col_modified)
         c.set_option('VIEW_COLUMNS', 'created', self.view_col_created)
         c.set_option('VIEW_COLUMNS', 'type', self.view_col_type)
+        self.refresh_list()
+
+    def refresh_list(self):
+        """
+        Refresh list when changing view columns settings or typing a search term
+        :return: None
+        """
+        if self.view_col_modified:
+            self.treeWidget.showColumn(3)
+        else:
+            self.treeWidget.hideColumn(3)
+        if self.view_col_created:
+            self.treeWidget.showColumn(4)
+        else:
+            self.treeWidget.hideColumn(4)
+        if self.view_col_type:
+            self.treeWidget.showColumn(5)
+        else:
+            self.treeWidget.hideColumn(5)
 
     def build_all_action(self):
         """

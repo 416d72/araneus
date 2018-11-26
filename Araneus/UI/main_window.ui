@@ -37,6 +37,27 @@
     </item>
     <item row="1" column="0">
      <widget class="QTreeWidget" name="treeWidget">
+      <property name="contextMenuPolicy">
+       <enum>Qt::DefaultContextMenu</enum>
+      </property>
+      <property name="allColumnsShowFocus">
+       <bool>true</bool>
+      </property>
+      <property name="columnCount">
+       <number>6</number>
+      </property>
+      <attribute name="headerVisible">
+       <bool>true</bool>
+      </attribute>
+      <attribute name="headerCascadingSectionResizes">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="headerHighlightSections">
+       <bool>false</bool>
+      </attribute>
+      <attribute name="headerShowSortIndicator" stdset="0">
+       <bool>true</bool>
+      </attribute>
       <column>
        <property name="text">
         <string>Name</string>
@@ -50,6 +71,21 @@
       <column>
        <property name="text">
         <string>Location</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Modified</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Created</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Type</string>
        </property>
       </column>
      </widget>

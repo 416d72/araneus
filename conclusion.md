@@ -18,7 +18,7 @@ Here are things that I learnt through out making this app
 ### QT
 - Embedding shortcuts in QT designer app templates instead of using event listener in the controller.
 - Figured out how to load several Qt windows thanks to this old answer [here](http://python.6.x6.nabble.com/QCoreApplication-exec-The-event-loop-is-already-running-tp1795366p1795378.html)
-
+- Learnt how to control the visibility of columns in Qtreeview thanks to [that answer](https://stackoverflow.com/a/26675732/7301680)
  
 And here are things that I'd like to learn deeper in the near future:
 -
