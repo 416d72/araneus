@@ -4,10 +4,12 @@
 
 from Araneus.helpers import *
 from Araneus.configurations import *
+from Araneus.history import *
 from PyQt5.QtWidgets import QDialog, QApplication
 from PyQt5.uic import loadUi
 
 conf = Configurations()
+history = History()
 
 
 class Preferences(QDialog):
@@ -62,7 +64,8 @@ class Preferences(QDialog):
         Clears the history file
         :return: None
         """
-        print('clear')
+        history.clear()
+        self.history_delete_label.setText('History is deleted!')
 
     def save(self):
         """
