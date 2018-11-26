@@ -44,7 +44,6 @@ class Preferences(QDialog):
         self.search_hidden_files.setChecked(conf.get_option('SEARCH', 'Show_hidden_files', 'bool'))
         # Database tab
         self.db_auto_build.setChecked(conf.get_option('DATABASE', 'Auto_build', 'bool'))
-        self.db_background_build.setChecked(conf.get_option('DATABASE', 'Background_build', 'bool'))
         self.db_min_file_size_label.setChecked(conf.get_option('DATABASE', 'Min_size_true', 'bool'))
         self.db_min_file_size.setEnabled(self.db_min_file_size_label.isChecked())
         self.db_min_file_size.setValue(conf.get_option('DATABASE', 'Min_size', 'int'))
@@ -84,7 +83,6 @@ class Preferences(QDialog):
         conf.set_option('SEARCH', 'Show_hidden_files', self.search_hidden_files.isChecked())
         # Database tab
         conf.set_option('DATABASE', 'Auto_build', self.db_auto_build.isChecked())
-        conf.set_option('DATABASE', 'Background_build', self.db_background_build.isChecked())
         conf.set_option('DATABASE', 'Min_size_true', self.db_min_file_size_label.isChecked())
         conf.set_option('DATABASE', 'Min_size', self.db_min_file_size.value())
 
