@@ -72,35 +72,53 @@ class Configurations:
         except ValueError:
             return ValueError
 
-    def validate(self, section, option):
+    def validate(self):
         """
-        Checks if the configurations file contains the given option value
-        :param section: string
-        :param option: string
-        :return: None
+        Validate the config file
+        :return: bool
         """
-        config.read(self.conf_file_path)
-        if not config.has_option(section, option):
-            self.reset()
-        return True
+        try:
+            config.read(self.std_conf_file_path)
+            nconfig = configparser.ConfigParser()
+            nconfig.read(self.conf_file_path)
+            for section in config.sections():
+                for (key, val) in config.items(section):
+                    if not nconfig.has_option(section, key):
+                        self.reset()
+            return True
+        except Exception:
+            return False
 
-    def get_option(self, section, option):
+    def get_option(self, section, option, method='str'):
         """
         Read configurations file
         :return: String
         """
         try:
-            self.validate(section, option)
-            return config[section][option]
+            self.validate()
+            config.read(self.conf_file_path)
+            if method == 'int':
+                return config.getint(section, option)
+            elif method == 'bool':
+                return config.getboolean(section, option)
+            else:
+                return config.get(section, option)
         except ValueError:
             return ValueError("Error occurred while getting the required option value")
 
     def set_option(self, section, option, value):
+
         try:
-            self.validate(section, option)
-            config[section][option] = value
+            self.validate()
+            config.read(self.conf_file_path)
+            config[section][option] = str(value)
             with open(self.conf_file_path, 'w') as f:
                 config.write(f)
             return self.get_option(section, option)
         except ValueError:
             raise ValueError("Error occurred while changing preferences")
+
+#
+# test = Configurations()
+# print(type(test.get_option('GENERAL', 'Language', 'str')))
+# print(test.get_option('GENERAL', 'Language', 'str'))

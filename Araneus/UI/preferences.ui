@@ -30,7 +30,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="general">
       <attribute name="title">
@@ -60,6 +60,12 @@
        </item>
        <item row="0" column="1">
         <widget class="QComboBox" name="general_language">
+         <property name="currentText">
+          <string notr="true">English</string>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
          <item>
           <property name="text">
            <string>English</string>
@@ -148,10 +154,13 @@
           <set>Qt::AlignCenter</set>
          </property>
          <property name="minimum">
-          <number>0</number>
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>1024</number>
          </property>
          <property name="value">
-          <number>0</number>
+          <number>1</number>
          </property>
         </widget>
        </item>
