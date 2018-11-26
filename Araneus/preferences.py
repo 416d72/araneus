@@ -20,11 +20,11 @@ class Preferences(QDialog):
     def __init__(self):
         super(Preferences, self).__init__()
         loadUi(load_ui('preferences'), self)
-        self.retreive()
+        self.retrieve()
         self.state_change()
         self.show()
 
-    def retreive(self):
+    def retrieve(self):
         """
         Show current settings
         :return: bool
