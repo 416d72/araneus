@@ -89,10 +89,13 @@ class Configurations:
         except Exception:
             return False
 
-    def get_option(self, section, option, method='str'):
+    def get_option(self, section: str, option: str, method: str = 'str'):
         """
         Read configurations file
-        :return: String
+        :type section: str
+        :param option: str
+        :param method: str
+        :return: mixed
         """
         try:
             self.validate()
@@ -106,8 +109,14 @@ class Configurations:
         except ValueError:
             return ValueError("Error occurred while getting the required option value")
 
-    def set_option(self, section, option, value):
-
+    def set_option(self, section: str, option: str, value: str):
+        """
+        Update a current value
+        :param section: str
+        :param option: str
+        :param value: str
+        :return: str
+        """
         try:
             self.validate()
             config.read(self.conf_file_path)
@@ -116,10 +125,4 @@ class Configurations:
                 config.write(f)
             return self.get_option(section, option)
         except ValueError:
-            raise ValueError("Error occurred while changing preferences")
-
-#
-# test = Configurations()
-# test.reset()
-# print(type(test.get_option('GENERAL', 'Language', 'str')))
-# print(test.get_option('GENERAL', 'Language', 'str'))
+            return ValueError("Error occurred while changing preferences")

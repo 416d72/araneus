@@ -32,7 +32,7 @@ class Main(QMainWindow):
         pass
 
     def triggers(self):
-        self.actionQuit.triggered.connect(lambda: sys.exit(QApplication(sys.argv).exec_()))
+        self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
         self.actionBuild_All.triggered.connect(self.build_all_action)
         self.actionClean.triggered.connect(self.clean_all_action)
