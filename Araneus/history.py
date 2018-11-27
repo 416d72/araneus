@@ -5,10 +5,10 @@ from Araneus.helpers import *
 
 
 class History:
-    history_file_location = '/tmp/Araneus_history.txt'
+    history_file_location = str(os.path.expanduser('~')) + '/.config/Araneus/history.txt'
 
     def __init__(self):
-        pass
+        self.create()
 
     def create(self):
         """
@@ -62,7 +62,8 @@ class History:
         except Exception:
             return False
 
+
 # test = History()
 # test.add('araneus')
 # test.clear()
-# print(test.get(), '\n', len(test.get()))
+# print(test.get())
