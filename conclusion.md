@@ -12,8 +12,9 @@ Here are things that I learnt through out making this app
     - Handling `.ini` files for saving configurations using `configparser`.
     - Copying files with their permissions with `copy2` from `shutil` module.
     - Prepend text to a file thanks to [this answer](https://stackoverflow.com/a/4454598/7301680).
+    - Getting file attributes with either `os.stat` or `os.path.get*`.
 - Interacting with operating system:
-    - Executing system commands with `os.system(command)`.
+    - Executing system commands with `os.system(command)` or `subprocess.getoutput(command)`.
     - Getting user's home directory with `os.path.expanduser(~)`
     - Checking what OS is currently running with `sys.platform`.
     - Allowing only one instance by creating a `.pid` file and handling it.
@@ -27,6 +28,7 @@ Here are things that I learnt through out making this app
  
 And here are things that I'd like to learn deeper in the near future:
 -
+- Formatting strings
 - Exception handling.
 - Multi processing.
 - Multi threading.
