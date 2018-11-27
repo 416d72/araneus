@@ -7,11 +7,12 @@ from Araneus.configurations import *
 from Araneus.connection import *
 
 config = Configurations()
+min_size = 0
 if config.get_option('DATABASE', 'min_size_true', 'bool'):
     min_size = config.get_option('DATABASE', 'min_size', 'int')
 
 
-class Database:
+class Database(Connection()):
     def __init__(self):
         """
         Manipulate database
@@ -21,13 +22,6 @@ class Database:
     def build(self):
         """
         Build a new database
-        :return: bool
-        """
-        pass
-
-    def clean(self):
-        """
-        Truncate database
         :return: bool
         """
         pass
