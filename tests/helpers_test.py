@@ -11,3 +11,7 @@ class TestHelpers(unittest.TestCase):
 
     def test_load_ui(self):
         self.assertIsInstance(load_ui('about'), str)
+
+
+if __name__ == '__main__':
+    unittest.main()

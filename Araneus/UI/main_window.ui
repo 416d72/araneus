@@ -75,12 +75,12 @@
       </column>
       <column>
        <property name="text">
-        <string>Modified</string>
+        <string>Modified at</string>
        </property>
       </column>
       <column>
        <property name="text">
-        <string>Created</string>
+        <string>Last access</string>
        </property>
       </column>
       <column>
@@ -126,9 +126,8 @@
       <string>Columns</string>
      </property>
      <addaction name="separator"/>
-     <addaction name="separator"/>
      <addaction name="actionModified"/>
-     <addaction name="actionCreated"/>
+     <addaction name="actionAccess"/>
      <addaction name="actionType"/>
     </widget>
     <addaction name="menuColumns"/>
@@ -212,12 +211,12 @@
     <string>Modified</string>
    </property>
   </action>
-  <action name="actionCreated">
+  <action name="actionAccess">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Created</string>
+    <string>Last Access</string>
    </property>
   </action>
   <action name="actionType">

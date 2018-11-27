@@ -4,6 +4,7 @@
 
 from Araneus.helpers import *
 from Araneus.configurations import *
+from Araneus.database import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.uic import loadUi
 
@@ -12,7 +13,7 @@ c = Configurations()
 
 class Main(QMainWindow):
     view_col_modified = c.get_option('VIEW_COLUMNS', 'modified', 'bool')
-    view_col_created = c.get_option('VIEW_COLUMNS', 'created', 'bool')
+    view_col_accessed = c.get_option('VIEW_COLUMNS', 'accessed', 'bool')
     view_col_type = c.get_option('VIEW_COLUMNS', 'type', 'bool')
 
     def __init__(self):
@@ -53,7 +54,7 @@ class Main(QMainWindow):
         :return: None
         """
         self.actionModified.setChecked(self.view_col_modified)
-        self.actionCreated.setChecked(self.view_col_created)
+        self.actionAccess.setChecked(self.view_col_accessed)
         self.actionType.setChecked(self.view_col_type)
         self.refresh_list()
 
@@ -63,7 +64,7 @@ class Main(QMainWindow):
         :return: None
         """
         self.actionModified.toggled.connect(lambda: self.update_view_columns())
-        self.actionCreated.toggled.connect(lambda: self.update_view_columns())
+        self.actionAccess.toggled.connect(lambda: self.update_view_columns())
         self.actionType.toggled.connect(lambda: self.update_view_columns())
 
     def update_view_columns(self):
@@ -72,10 +73,10 @@ class Main(QMainWindow):
         :return: None
         """
         self.view_col_modified = self.actionModified.isChecked()
-        self.view_col_created = self.actionCreated.isChecked()
+        self.view_col_accessed = self.actionAccess.isChecked()
         self.view_col_type = self.actionType.isChecked()
         c.set_option('VIEW_COLUMNS', 'modified', self.view_col_modified)
-        c.set_option('VIEW_COLUMNS', 'created', self.view_col_created)
+        c.set_option('VIEW_COLUMNS', 'accessed', self.view_col_accessed)
         c.set_option('VIEW_COLUMNS', 'type', self.view_col_type)
         self.refresh_list()
 
@@ -88,7 +89,7 @@ class Main(QMainWindow):
             self.treeWidget.showColumn(3)
         else:
             self.treeWidget.hideColumn(3)
-        if self.view_col_created:
+        if self.view_col_accessed:
             self.treeWidget.showColumn(4)
         else:
             self.treeWidget.hideColumn(4)
