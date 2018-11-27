@@ -4,18 +4,20 @@
 import unittest
 from Araneus.history import *
 
-h = History()
-
 
 class TestHistory(unittest.TestCase):
     def test_create(self):
-        self.assertTrue(h.create())
+        self.assertTrue(History().create())
 
     def test_clear(self):
-        self.assertTrue(h.clear())
+        self.assertTrue(History().clear())
 
     def test_append(self):
-        self.assertTrue(h.add('amr'))
+        self.assertTrue(History().add('amr'))
 
     def test_get(self):
-        self.assertIsInstance(h.get(), list)
+        self.assertIsInstance(History().get(), list)
+
+
+if __name__ == '__main__':
+    unittest.main()
