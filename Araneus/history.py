@@ -1,4 +1,3 @@
-#!usr/bin/python3
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 from Araneus.helpers import *

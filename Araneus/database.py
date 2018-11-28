@@ -1,4 +1,3 @@
-#!usr/bin/python3
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 import time
@@ -11,11 +10,10 @@ class Database(Connection):
     min_size = 0
     if config.get_option('DATABASE', 'min_size_true', 'bool'):
         min_size = config.get_option('DATABASE', 'min_size', 'int')
-    mechanism = config.get_option('ADVANCED', 'Indexing_mechanism')
+    mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
 
-    target = os.path.expanduser('~') + '/Dev/Python/'  # Currently only user's home folder will be indexed
-
-    script = ''
+    target = os.path.abspath(
+        os.path.expanduser('~') + '/Dev/Python/Automation/')  # Currently only user's home folder will be indexed
 
     def build(self):
         """
@@ -39,33 +37,51 @@ class Database(Connection):
             raise Exception
 
     def _walk(self):
-        command = "INSERT INTO `{}` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?," \
-                  "?);".format(self.table)
         con = sqlite3.connect(self.std_db)
         cursor = con.cursor()
         cursor.execute('PRAGMA synchronous = OFF')
+        cursor.execute('PRAGMA journal_mode = MEMORY')
         cursor.execute('BEGIN TRANSACTION')
+        cursor.execute("CREATE TABLE IF NOT EXISTS data "
+                       "("
+                       "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
+                       "`name` TEXT,"
+                       "`size` TEXT,"
+                       "`location` TEXT,"
+                       "`modified` TEXT,"
+                       "`accessed` TEXT,"
+                       "`type` TEXT"
+                       "); ")
         for f in os.walk(self.target):
-            path = f[0] + '/'
-            cursor.execute(command, (
-                f[0].split('/')[-1],
-                '',
-                path,
-                time.ctime(os.stat(path).st_mtime),
-                time.ctime(os.stat(path).st_atime),
-                'Directory'), )
+            cursor.execute(
+                "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
+                (
+                    f[0].split('/')[-1],
+                    '',
+                    f[0] + '/',
+                    os.stat(f[0] + '/').st_mtime,
+                    os.stat(f[0] + '/').st_atime,
+                    'Directory',
+                )
+            )
             for file in f[2]:
-                cursor.execute(command, (
-                    file,
-                    self._convert(os.stat(path + file).st_size)[0],
-                    path,
-                    time.ctime(os.stat(path + file).st_mtime),
-                    time.ctime(os.stat(path + file).st_atime),
-                    from_file(path + file,
-                              mime=True)))
+                cursor.execute(
+                    "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
+                    (
+                        file,
+                        os.stat(f[0] + '/' + file).st_size,
+                        f[0] + '/',
+                        os.stat(f[0] + '/' + file).st_mtime,
+                        os.stat(f[0] + '/' + file).st_atime,
+                        from_file(f[0] + '/' + file,
+                                  mime=True)
+                    )
+                )
+        cursor.execute('END TRANSACTION')
         con.commit()
         con.close()
-
+    
+    @staticmethod
     def _convert(self, size: int):
         power = 2 ** 10
         n = 0
@@ -74,12 +90,3 @@ class Database(Connection):
             size /= power
             n += 1
         return "%.2f " % round(size, 2) + d[n], int(size)
-
-
-#
-s = time.time()
-test = Database()
-# test.drop()
-# test.build()
-# print(test.fetch_all())
-print("%.3f seconds" % round(time.time() - s, 3))

@@ -1,4 +1,3 @@
-#!usr/bin/python3
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 
@@ -48,11 +47,6 @@ class Preferences(QDialog):
         self.db_min_file_size.setEnabled(self.db_min_file_size_label.isChecked())
         self.db_min_file_size.setValue(conf.get_option('DATABASE', 'Min_size', 'int'))
         # Advanced tab
-        if 'Cpython' in conf.get_option('ADVANCED', 'Interpreter'):  # Index should be zero
-            self.ad_interpreter.setCurrentIndex(0)
-        else:
-            # TODO: check if PyPy is installed.
-            self.ad_interpreter.setCurrentIndex(1)
         mechanism = conf.get_option('ADVANCED', 'Indexing_mechanism')
         if 'python' in mechanism:  # Index should be zero
             self.ad_indexing_combox.setCurrentIndex(0)
@@ -88,21 +82,20 @@ class Preferences(QDialog):
         :return: None
         """
         # General tab
-        conf.set_option('GENERAL', 'Language', self.general_language.currentIndex())
-        conf.set_option('GENERAL', 'Auto_start', self.general_autostart.isChecked())
-        conf.set_option('GENERAL', 'Start_min', self.general_start_minimized.isChecked())
+        conf.set_option('GENERAL', 'language', self.general_language.currentIndex())
+        conf.set_option('GENERAL', 'auto_start', self.general_autostart.isChecked())
+        conf.set_option('GENERAL', 'start_min', self.general_start_minimized.isChecked())
         # History tab
-        conf.set_option('HISTORY', 'Remember', self.history_remember.isChecked())
-        conf.set_option('HISTORY', 'Max_items', self.history_max_number.value())
+        conf.set_option('HISTORY', 'remember', self.history_remember.isChecked())
+        conf.set_option('HISTORY', 'max_items', self.history_max_number.value())
         # Search tab
-        conf.set_option('SEARCH', 'Show_hidden_files', self.search_hidden_files.isChecked())
+        conf.set_option('SEARCH', 'show_hidden_files', self.search_hidden_files.isChecked())
         # Database tab
-        conf.set_option('DATABASE', 'Auto_build', self.db_auto_build.isChecked())
-        conf.set_option('DATABASE', 'Min_size_true', self.db_min_file_size_label.isChecked())
-        conf.set_option('DATABASE', 'Min_size', self.db_min_file_size.value())
+        conf.set_option('DATABASE', 'auto_build', self.db_auto_build.isChecked())
+        conf.set_option('DATABASE', 'min_size_true', self.db_min_file_size_label.isChecked())
+        conf.set_option('DATABASE', 'min_size', self.db_min_file_size.value())
         # Advanced tab:
-        conf.set_option('ADVANCED', 'Interpreter', self.ad_interpreter.currentText())
-        conf.set_option('ADVANCED', 'Indexing_mechanism', self.ad_indexing_combox.currentText())
+        conf.set_option('ADVANCED', 'indexing_mechanism', self.ad_indexing_combox.currentText().lower())
 
 
 if __name__ == "__main__":

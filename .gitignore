@@ -82,9 +82,8 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
 env/
-
+pypy
 # Pycharm
 .idea/
 tests/_trial_temp/
