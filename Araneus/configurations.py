@@ -105,7 +105,7 @@ class Configurations:
             elif method == 'bool':
                 return config.getboolean(section, option)
             else:
-                return config.get(section, option)
+                return str(config.get(section, option))
         except ValueError:
             return ValueError("Error occurred while getting the required option value")
 

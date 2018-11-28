@@ -47,6 +47,22 @@ class Preferences(QDialog):
         self.db_min_file_size_label.setChecked(conf.get_option('DATABASE', 'Min_size_true', 'bool'))
         self.db_min_file_size.setEnabled(self.db_min_file_size_label.isChecked())
         self.db_min_file_size.setValue(conf.get_option('DATABASE', 'Min_size', 'int'))
+        # Advanced tab
+        if 'Cpython' in conf.get_option('ADVANCED', 'Interpreter'):  # Index should be zero
+            self.ad_interpreter.setCurrentIndex(0)
+        else:
+            # TODO: check if PyPy is installed.
+            self.ad_interpreter.setCurrentIndex(1)
+        mechanism = conf.get_option('ADVANCED', 'Indexing_mechanism')
+        if 'python' in mechanism:  # Index should be zero
+            self.ad_indexing_combox.setCurrentIndex(0)
+        elif 'find' in mechanism:
+            self.ad_indexing_combox.setCurrentIndex(1)
+        elif 'locate' in mechanism:
+            self.ad_indexing_combox.setCurrentIndex(2)
+        elif 'fd' in mechanism:
+            # TODO: check if package fd installed in the system
+            self.ad_indexing_combox.setCurrentIndex(3)
 
     def state_change(self):
         """
@@ -69,7 +85,6 @@ class Preferences(QDialog):
     def save(self):
         """
         Save any modified settings to configuration file
-        TODO: link this method with the action that triggered when clicking `ok` button
         :return: None
         """
         # General tab
@@ -85,6 +100,9 @@ class Preferences(QDialog):
         conf.set_option('DATABASE', 'Auto_build', self.db_auto_build.isChecked())
         conf.set_option('DATABASE', 'Min_size_true', self.db_min_file_size_label.isChecked())
         conf.set_option('DATABASE', 'Min_size', self.db_min_file_size.value())
+        # Advanced tab:
+        conf.set_option('ADVANCED', 'Interpreter', self.ad_interpreter.currentText())
+        conf.set_option('ADVANCED', 'Indexing_mechanism', self.ad_indexing_combox.currentText())
 
 
 if __name__ == "__main__":
