@@ -46,7 +46,7 @@ class Connection:
         except Exception:
             raise Exception
 
-    def insert(self, command: str, values: list):
+    def insert(self, name, size, location, modified, accessed, file_type):
         """
         Insert a new record in database
         :param name: str
@@ -58,9 +58,11 @@ class Connection:
         :return: bool
         """
         try:
+            command = "INSERT INTO `{}` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?," \
+                      "?);".format(self.table)
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            cursor.executescript(command)
+            cursor.execute(command, (name, size, location, modified, accessed, file_type))
             con.commit()
             con.close()
             return True
