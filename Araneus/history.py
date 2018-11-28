@@ -5,7 +5,7 @@ from Araneus.helpers import *
 
 
 class History:
-    history_file_location = str(os.path.expanduser('~')) + '/.config/Araneus/history.txt'
+    history_file_location = config_dir + 'history.txt'
 
     def __init__(self):
         self.create()
@@ -61,7 +61,6 @@ class History:
                 return [line.strip() for line in f][:count]
         except Exception:
             return False
-
 
 # test = History()
 # test.add('araneus')

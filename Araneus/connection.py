@@ -3,7 +3,6 @@
 # LICENSE: see Araneus/LICENSE
 
 import sqlite3
-from Araneus.helpers import *
 from Araneus.configurations import *
 
 if Configurations().get_option('DATABASE', 'min_size_true', 'bool'):
@@ -14,7 +13,7 @@ class Connection:
     """
     Manages connection to the sqlite3 database
     """
-    std_db = str(os.path.expanduser('~') + '/.config/Araneus/database')
+    std_db = config_dir + 'database'
     table = 'data'
 
     def __init__(self):
@@ -47,7 +46,7 @@ class Connection:
         except Exception:
             raise Exception
 
-    def insert(self, name, size, location, modified, accessed, file_type):
+    def insert(self, command: str, values: list):
         """
         Insert a new record in database
         :param name: str
@@ -59,11 +58,9 @@ class Connection:
         :return: bool
         """
         try:
-            command = "INSERT INTO `{}` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?," \
-                      "?);".format(self.table)
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            cursor.execute(command, (name, size, location, modified, accessed, file_type))
+            cursor.executescript(command)
             con.commit()
             con.close()
             return True

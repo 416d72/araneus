@@ -5,6 +5,7 @@ import os
 import sys
 
 pid_file = '/tmp/Araneus.pid'
+config_dir = os.path.expanduser('~') + '/.config/Araneus/'
 
 
 def check_os():
