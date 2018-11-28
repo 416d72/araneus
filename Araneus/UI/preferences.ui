@@ -34,7 +34,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="general">
       <attribute name="title">
@@ -229,7 +229,7 @@
        <item row="1" column="1">
         <widget class="QComboBox" name="ad_indexing_combox">
          <property name="enabled">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Will be available in a future release.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -246,7 +246,7 @@
          </item>
          <item>
           <property name="text">
-           <string>GNU Locate</string>
+           <string>GNU locate</string>
           </property>
          </item>
          <item>
@@ -265,6 +265,15 @@
        </item>
        <item row="0" column="1">
         <widget class="QComboBox" name="ad_interpreter">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="currentText">
+          <string>Cpython (default)</string>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
          <item>
           <property name="text">
            <string>Cpython (default)</string>
