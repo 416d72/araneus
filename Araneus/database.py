@@ -13,7 +13,9 @@ class Database(Connection):
         min_size = config.get_option('DATABASE', 'min_size', 'int')
     mechanism = config.get_option('ADVANCED', 'Indexing_mechanism')
 
-    target = os.path.expanduser('~') + '/Dev/Python/1-Basics'  # Currently only user's home folder will be indexed
+    target = os.path.expanduser('~') + '/Dev/Python/'  # Currently only user's home folder will be indexed
+
+    script = ''
 
     def build(self):
         """
@@ -37,53 +39,32 @@ class Database(Connection):
             raise Exception
 
     def _walk(self):
+        command = "INSERT INTO `{}` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?," \
+                  "?);".format(self.table)
+        con = sqlite3.connect(self.std_db)
+        cursor = con.cursor()
+        cursor.execute('PRAGMA synchronous = OFF')
+        cursor.execute('BEGIN TRANSACTION')
         for f in os.walk(self.target):
-            result = []
             path = f[0] + '/'
-            # result.append([
-            #     f[0].split('/')[-1],
-            #     # subprocess.getoutput('du -sh %s' % path).split()[0], # Isn't really necessary and consumes more
-            #     # processing power
-            #     '',
-            #     path,
-            #     time.ctime(os.stat(path).st_mtime),
-            #     time.ctime(os.stat(path).st_atime),
-            #     'Directory'
-            # ])
-            super().insert(
+            cursor.execute(command, (
                 f[0].split('/')[-1],
                 '',
                 path,
                 time.ctime(os.stat(path).st_mtime),
                 time.ctime(os.stat(path).st_atime),
-                'Directory')
+                'Directory'), )
             for file in f[2]:
-                # result.append([
-                #     file,
-                #     self._convert(os.stat(path + file).st_size)[0],
-                #     path,
-                #     time.ctime(os.stat(path + file).st_mtime),
-                #     time.ctime(os.stat(path + file).st_atime),
-                #     from_file(path + file, mime=True)
-                # ])
-                super().insert(
+                cursor.execute(command, (
                     file,
                     self._convert(os.stat(path + file).st_size)[0],
                     path,
                     time.ctime(os.stat(path + file).st_mtime),
                     time.ctime(os.stat(path + file).st_atime),
                     from_file(path + file,
-                              mime=True))
-
-    def to_sql(self, file: dict):
-        """
-        Converts dictionary values to string SQL commands
-        Here I've reached a point where I must choose security or performance !
-So I'm sticking with security till I figure a way to have both ..
-        :param file: Dictionary contains both column names in database with their values
-        :return: bool
-        """
-        pass
+                              mime=True)))
+        con.commit()
+        con.close()
 
     def _convert(self, size: int):
         power = 2 ** 10
@@ -95,7 +76,10 @@ So I'm sticking with security till I figure a way to have both ..
         return "%.2f " % round(size, 2) + d[n], int(size)
 
 
+#
 s = time.time()
 test = Database()
-test.build()
+# test.drop()
+# test.build()
+# print(test.fetch_all())
 print("%.3f seconds" % round(time.time() - s, 3))

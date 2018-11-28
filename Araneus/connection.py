@@ -14,6 +14,7 @@ class Connection:
     Manages connection to the sqlite3 database
     """
     std_db = config_dir + 'database'
+    # std_db = ':memory:'
     table = 'data'
 
     def __init__(self):
@@ -44,29 +45,6 @@ class Connection:
             con.close()
             return True
         except Exception:
-            raise Exception
-
-    def insert(self, name, size, location, modified, accessed, file_type):
-        """
-        Insert a new record in database
-        :param name: str
-        :param size: str
-        :param location: str
-        :param modified: str
-        :param accessed: str
-        :param file_type: str
-        :return: bool
-        """
-        try:
-            command = "INSERT INTO `{}` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?," \
-                      "?);".format(self.table)
-            con = sqlite3.connect(self.std_db)
-            cursor = con.cursor()
-            cursor.execute(command, (name, size, location, modified, accessed, file_type))
-            con.commit()
-            con.close()
-            return True
-        except:
             raise Exception
 
     def get(self, search_term):
