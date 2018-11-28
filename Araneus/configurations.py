@@ -12,7 +12,6 @@ class Configurations:
     """
     Contains all methods for manipulate settings
     """
-    conf_dir = ''
     conf_file_path = ''
     std_conf_file_path = ''
 
@@ -26,8 +25,7 @@ class Configurations:
 
     def declare(self):
         try:
-            self.conf_dir = str(os.path.expanduser("~")) + "/.config/Araneus/"
-            self.conf_file_path = self.conf_dir + "conf.ini"
+            self.conf_file_path = config_dir + "conf.ini"
             self.std_conf_file_path = os.path.dirname(os.getcwd()) + "/Araneus/configurations/default-conf.ini"
             return True
         except ValueError:
@@ -38,9 +36,9 @@ class Configurations:
         Creates Application's directory
         :return: Bool
         """
-        if not os.path.exists(self.conf_dir):
+        if not os.path.exists(config_dir):
             try:
-                os.mkdir(self.conf_dir)
+                os.mkdir(config_dir)
                 return True
             except ValueError:
                 return ValueError
@@ -126,3 +124,5 @@ class Configurations:
             return self.get_option(section, option)
         except ValueError:
             return ValueError("Error occurred while changing preferences")
+
+test = Configurations()

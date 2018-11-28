@@ -4,17 +4,16 @@
 import unittest
 from Araneus.database import *
 
-db = Database()
-
 
 class TestDatabase(unittest.TestCase):
     def test_build(self):
-        # self.assertTrue(db.build())
-        pass
+        self.assertTrue(Database().build())
+
+    def test_to_sql(self):
+        self.assertIsInstance(Database().to_sql({''}))
 
     def test_clean(self):
-        # self.assertTrue(db.clean())
-        pass
+        self.assertTrue(Database().drop())
 
 
 if __name__ == '__main__':
