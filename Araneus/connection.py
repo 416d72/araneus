@@ -1,4 +1,3 @@
-#!usr/bin/python3
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 
@@ -14,7 +13,6 @@ class Connection:
     Manages connection to the sqlite3 database
     """
     std_db = config_dir + 'database'
-    # std_db = ':memory:'
     table = 'data'
 
     def __init__(self):
