@@ -5,6 +5,9 @@
 - Linux
 - Python3
 - PyQt5
+- python-magic
+# Usage:
+> Instructions and examples will be available in the first stable release.
 # Installation:
 > Instructions will be available in the first stable release.
 
