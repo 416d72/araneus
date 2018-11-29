@@ -35,17 +35,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="search_btn">
-      <property name="text">
-       <string>Search</string>
-      </property>
-     </widget>
-    </item>
     <item row="1" column="0" colspan="2">
      <widget class="QTreeWidget" name="treeWidget">
       <property name="contextMenuPolicy">
-       <enum>Qt::DefaultContextMenu</enum>
+       <enum>Qt::CustomContextMenu</enum>
       </property>
       <property name="sortingEnabled">
        <bool>true</bool>
@@ -107,6 +100,13 @@
       </property>
       <property name="value">
        <number>0</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="search_btn">
+      <property name="text">
+       <string>Search</string>
       </property>
      </widget>
     </item>
