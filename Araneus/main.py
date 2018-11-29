@@ -199,7 +199,7 @@ class Main(QMainWindow):
 def main():
     main_w = QApplication(sys.argv)
     main_window = Main()
-    main_window.show()
+    main_window.showMaximized()
     main_window.check_empty_db()
     sys.exit(main_w.exec_())
 
