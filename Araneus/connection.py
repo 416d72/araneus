@@ -4,10 +4,6 @@
 import sqlite3
 from Araneus.configurations import *
 
-if Configurations().get_option('DATABASE', 'min_size_true', 'bool'):
-    min_size = Configurations().get_option('DATABASE', 'min_size', 'int')
-
-
 class Connection:
     """
     Manages connection to the sqlite3 database
