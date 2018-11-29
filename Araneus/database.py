@@ -1,6 +1,5 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
-import time
 from magic import from_file
 from Araneus.connection import *
 
@@ -82,12 +81,3 @@ class Database(Connection):
         con.commit()
         con.close()
 
-    @staticmethod
-    def _convert(self, size: int):
-        power = 2 ** 10
-        n = 0
-        d = {0: 'Bytes', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
-        while size >= power:
-            size /= power
-            n += 1
-        return "%.2f " % round(size, 2) + d[n], int(size)

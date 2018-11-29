@@ -1,12 +1,11 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 
-from Araneus.helpers import *
-from Araneus.configurations import *
 from Araneus.database import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.uic import loadUi
 
+db = Database()
 c = Configurations()
 
 
@@ -26,7 +25,6 @@ class Main(QMainWindow):
     def check_empty_db(self):
         """
         Checks if the database is empty and prompt the user to build it if empty.
-        TODO: Implement connection to database.py
         :return: bool
         """
         pass
@@ -37,15 +35,6 @@ class Main(QMainWindow):
         self.actionBuild_All.triggered.connect(self.build_all_action)
         self.actionClean.triggered.connect(self.clean_all_action)
         self.actionAbout.triggered.connect(self.about_dialog)
-
-    @staticmethod
-    def preferences_dialog(self):
-        """
-        Showing preferences dialog
-        :return: None
-        """
-        from Araneus.preferences import Preferences, new_window
-        new_window()
 
     def get_view_columns(self):
         """
@@ -97,19 +86,42 @@ class Main(QMainWindow):
         else:
             self.treeWidget.hideColumn(5)
 
+    @staticmethod
+    def preferences_dialog(self):
+        """
+        Showing preferences dialog
+        :return: None
+        """
+        from Araneus.preferences import Preferences, new_window
+        new_window()
+
+    @staticmethod
     def build_all_action(self):
         """
         Running 'Build' task
         :return: None
         """
-        print("Building ...")
+        db.build()
+        print("Successfully built database")
 
+    @staticmethod
     def clean_all_action(self):
         """
         Running 'clean' task
         :return: None
         """
+        db.drop()
         print("Cleaned everything")
+
+    @staticmethod
+    def _convert(self, size: int):
+        power = 2 ** 10
+        n = 0
+        d = {0: 'Bytes', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
+        while size >= power:
+            size /= power
+            n += 1
+        return "%.2f " % round(size, 2) + d[n], int(size)
 
     @staticmethod
     def about_dialog(self):
