@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QDialog, QApplication, QMainWindow
 from PyQt5.uic import loadUi
 
 
-
 class BuildDB(QDialog):
     """
     This class controls build_db dialog and interacts with Database model to build a new database.

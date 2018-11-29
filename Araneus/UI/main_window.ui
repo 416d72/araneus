@@ -81,7 +81,7 @@
      </widget>
     </item>
     <item row="0" column="0">
-     <widget class="QLineEdit" name="lineEdit">
+     <widget class="QLineEdit" name="search_bar">
       <property name="focusPolicy">
        <enum>Qt::StrongFocus</enum>
       </property>
