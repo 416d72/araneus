@@ -125,6 +125,8 @@ class Main(QMainWindow):
                     item.setText(4, datetime.utcfromtimestamp(float(result[4])).strftime('%Y-%m-%d %H:%M'))  # Accessed
                     item.setText(5, str(result[5]))  # Type
                     self.treeWidget.addTopLevelItem(item)
+            for i in range(6):
+                self.treeWidget.resizeColumnToContents(i)
 
     def build_db(self):
         """
