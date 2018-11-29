@@ -20,20 +20,20 @@ class Main(QMainWindow):
         self.get_view_columns()
         self.triggers()
         self.set_view_columns()
-        self.show()
 
     def check_empty_db(self):
         """
         Checks if the database is empty and prompt the user to build it if empty.
         :return: bool
         """
-        pass
+        db.create()
+        if not db.fetch_all():
+            self.build_db()
 
     def triggers(self):
         self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
         self.actionBuild_All.triggered.connect(self.build_all_action)
-        self.actionClean.triggered.connect(self.clean_all_action)
         self.actionAbout.triggered.connect(self.about_dialog)
 
     def get_view_columns(self):
@@ -86,32 +86,34 @@ class Main(QMainWindow):
         else:
             self.treeWidget.hideColumn(5)
 
+    def build_db(self):
+        """
+        Show the build_db dialog
+        :return: None
+        """
+        from Araneus.build_db import BuildDB, new_window
+        bdb = BuildDB()
+        bdb.buttonBox.accepted.connect(lambda: self.build_all_action())
+        global pref
+        pref = bdb
+
     @staticmethod
     def preferences_dialog(self):
         """
         Showing preferences dialog
         :return: None
         """
-        from Araneus.preferences import Preferences, new_window
+        from Araneus.preferences import new_window
         new_window()
 
-    @staticmethod
     def build_all_action(self):
         """
         Running 'Build' task
         :return: None
         """
+        self.statusBar().showMessage('Building')
         db.build()
-        print("Successfully built database")
-
-    @staticmethod
-    def clean_all_action(self):
-        """
-        Running 'clean' task
-        :return: None
-        """
-        db.drop()
-        print("Cleaned everything")
+        self.statusBar().showMessage('')
 
     @staticmethod
     def _convert(self, size: int):
@@ -134,9 +136,11 @@ class Main(QMainWindow):
 
 
 def main():
-    main = QApplication(sys.argv)
+    main_w = QApplication(sys.argv)
     main_window = Main()
-    sys.exit(main.exec_())
+    main_window.show()
+    main_window.check_empty_db()
+    sys.exit(main_w.exec_())
 
 
 if __name__ == "__main__":

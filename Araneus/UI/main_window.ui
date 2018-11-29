@@ -137,7 +137,6 @@
      <string>Database</string>
     </property>
     <addaction name="actionBuild_All"/>
-    <addaction name="actionClean"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">

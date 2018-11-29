@@ -67,7 +67,7 @@ class Connection:
             command = "SELECT * FROM `{}`".format(self.table)
             cursor.execute(command)
             return cursor.fetchall()
-        except:
+        except Exception:
             raise Exception
 
     def drop(self):
