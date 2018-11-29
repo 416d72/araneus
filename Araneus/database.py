@@ -10,16 +10,25 @@ class Database(Connection):
     if config.get_option('DATABASE', 'min_size_true', 'bool'):
         min_size = config.get_option('DATABASE', 'min_size', 'int') * 1024
     mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
-
     target = os.path.abspath(
-        os.path.expanduser('~') + '/Dev/')  # Currently only user's home folder will be indexed
+        os.path.expanduser('~') + '/Dev/Linux/compile/firefox/')  # Currently only user's home folder will be indexed
+
+    def __init__(self):
+        """
+        TODO: call a system command to get the total number of directories and build an algorithm to calculate an estimated time to animate the progress bar.
+        """
+        super().__init__()
+        pass
 
     def build(self):
         """
         Build a new database
         :return: bool
+        TODO: Multi processes | threads
+        TODO: Asynchronous
         """
         try:
+            super().create_tmp()
             super().drop()
             if 'python' in self.mechanism:
                 self._walk()
@@ -32,12 +41,13 @@ class Database(Connection):
             elif 'fd' in self.mechanism:
                 # TODO: implement indexing using the awesome fd package
                 pass
+            self.move_tmp_db()
             return True
         except:
             raise Exception
 
     def _walk(self):
-        con = sqlite3.connect(self.std_db)
+        con = sqlite3.connect(self.tmp_db)
         cursor = con.cursor()
         cursor.execute('PRAGMA synchronous = OFF')
         cursor.execute('PRAGMA journal_mode = MEMORY')
@@ -83,3 +93,11 @@ class Database(Connection):
         cursor.execute('END TRANSACTION')
         con.commit()
         con.close()
+
+    def move_tmp_db(self):
+        try:
+            copy2(self.tmp_db, self.std_db)
+            os.remove(self.tmp_db)
+            return True
+        except Exception:
+            return Exception

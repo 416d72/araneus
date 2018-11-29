@@ -4,11 +4,13 @@
 import sqlite3
 from Araneus.configurations import *
 
+
 class Connection:
     """
     Manages connection to the sqlite3 database
     """
     std_db = config_dir + 'database'
+    tmp_db = config_dir + 'temporary_database'
     table = 'data'
 
     def __init__(self):
@@ -41,6 +43,32 @@ class Connection:
         except Exception:
             raise Exception
 
+    def create_tmp(self):
+        """
+        Creates the temporary sqlite3 file
+        :return: bool
+        """
+        try:
+            """
+            Create a new temporary database with default table and columns
+            """
+            con = sqlite3.connect(self.tmp_db)
+            cursor = con.cursor()
+            cursor.execute("CREATE TABLE IF NOT EXISTS {} "
+                           "("
+                           "`name` TEXT,"
+                           "`size` TEXT,"
+                           "`location` TEXT,"
+                           "`modified` TEXT,"
+                           "`accessed` TEXT,"
+                           "`type` TEXT"
+                           "); ".format(self.table))
+            con.commit()
+            con.close()
+            return True
+        except Exception:
+            raise Exception
+
     def get(self, search_term):
         """
         Get all records that match search key word
@@ -50,9 +78,7 @@ class Connection:
         try:
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            command = "SELECT `name`,`size`,`location`,`modified`,`accessed`,`type` FROM `{}` WHERE `name` LIKE " \
-                      "?".format(
-                self.table)
+            command = "SELECT * FROM `{}` WHERE `name` LIKE ?".format(self.table)
             cursor.execute(command, ("%" + search_term + "%",))
             return cursor.fetchall()
         except:

@@ -21,6 +21,7 @@ class Main(QMainWindow):
     view_col_type = c.get_option('VIEW_COLUMNS', 'type', 'bool')
 
     def __init__(self):
+        # TODO: add icons to UI
         super(Main, self).__init__()
         loadUi(load_ui('main_window'), self)
         self.progressBar.hide()
@@ -36,6 +37,8 @@ class Main(QMainWindow):
         """
         db.create()
         if not db.fetch_all():
+            self.search_bar.setEnabled(0)
+            self.search_btn.setEnabled(0)
             self.build_db()
 
     def triggers(self):
@@ -106,6 +109,7 @@ class Main(QMainWindow):
         """
         Grab results from database
         :return: None
+        TODO: multi processing | threading here
         """
         # Storing search term to history file:
         history.add(term)
@@ -188,6 +192,8 @@ class Main(QMainWindow):
             self.progressBar.setValue(i)
         self.progressBar.hide()
         self.statusBar().showMessage('')
+        self.search_bar.setEnabled(1)
+        self.search_btn.setEnabled(1)
 
     @staticmethod
     def about_dialog(self):
