@@ -21,6 +21,7 @@ class Database(Connection):
         :return: bool
         """
         try:
+            super().drop()
             if 'python' in self.mechanism:
                 self._walk()
             elif 'find' in self.mechanism:
@@ -80,7 +81,7 @@ class Database(Connection):
         cursor.execute('END TRANSACTION')
         con.commit()
         con.close()
-    
+
     @staticmethod
     def _convert(self, size: int):
         power = 2 ** 10

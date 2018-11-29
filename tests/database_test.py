@@ -6,7 +6,6 @@ from Araneus.database import *
 
 class TestDatabase(unittest.TestCase):
     def test_build(self):
-        Database().drop()
         self.assertTrue(Database().build())
 
 
