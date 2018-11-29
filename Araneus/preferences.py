@@ -32,20 +32,20 @@ class Preferences(QDialog):
         :return: bool
         """
         # General tab
-        self.general_language.setCurrentIndex(conf.get_option('GENERAL', 'Language', 'int'))
-        self.general_autostart.setChecked(conf.get_option('GENERAL', 'Auto_start', 'bool'))
-        self.general_start_minimized.setChecked(conf.get_option('GENERAL', 'Start_min', 'bool'))
+        self.general_language.setCurrentIndex(conf.get_option('GENERAL', 'language', 'int'))
+        self.general_autostart.setChecked(conf.get_option('GENERAL', 'auto_start', 'bool'))
+        self.general_start_minimized.setChecked(conf.get_option('GENERAL', 'start_min', 'bool'))
         # History tab
-        self.history_remember.setChecked(conf.get_option('HISTORY', 'Remember', 'bool'))
+        self.history_remember.setChecked(conf.get_option('HISTORY', 'remember', 'bool'))
         self.history_max_number.setEnabled(self.history_remember.isChecked())
-        self.history_max_number.setValue(conf.get_option('HISTORY', 'Max_items', 'int'))
+        self.history_max_number.setValue(conf.get_option('HISTORY', 'max_items', 'int'))
         # Search tab
-        self.search_hidden_files.setChecked(conf.get_option('SEARCH', 'Show_hidden_files', 'bool'))
+        self.search_hidden_files.setChecked(conf.get_option('SEARCH', 'show_hidden_files', 'bool'))
         # Database tab
-        self.db_auto_build.setChecked(conf.get_option('DATABASE', 'Auto_build', 'bool'))
-        self.db_min_file_size_label.setChecked(conf.get_option('DATABASE', 'Min_size_true', 'bool'))
+        self.db_auto_build.setChecked(conf.get_option('DATABASE', 'auto_build', 'bool'))
+        self.db_min_file_size_label.setChecked(conf.get_option('DATABASE', 'min_size_true', 'bool'))
         self.db_min_file_size.setEnabled(self.db_min_file_size_label.isChecked())
-        self.db_min_file_size.setValue(conf.get_option('DATABASE', 'Min_size', 'int'))
+        self.db_min_file_size.setValue(conf.get_option('DATABASE', 'min_size', 'int'))
         # Advanced tab
         mechanism = conf.get_option('ADVANCED', 'Indexing_mechanism')
         if 'python' in mechanism:  # Index should be zero
