@@ -7,7 +7,7 @@ from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.Qt import QTreeWidgetItem
+from PyQt5.Qt import QTreeWidgetItem, QMenu, QAction, QCursor
 from PyQt5.uic import loadUi
 
 db = Database()
@@ -117,6 +117,7 @@ class Main(QMainWindow):
                 if not c.get_option('SEARCH', 'Show_hidden_files', 'bool') and result[0].startswith('.'):
                     continue
                 else:
+                    # Setting item and it's properties
                     item = QTreeWidgetItem(self.treeWidget)
                     item.setText(0, str(result[0]))  # Name
                     item.setText(1, self._convert(eval(result[1])))  # Size
@@ -124,9 +125,25 @@ class Main(QMainWindow):
                     item.setText(3, datetime.utcfromtimestamp(float(result[3])).strftime('%Y-%m-%d %H:%M'))  # Modified
                     item.setText(4, datetime.utcfromtimestamp(float(result[4])).strftime('%Y-%m-%d %H:%M'))  # Accessed
                     item.setText(5, str(result[5]))  # Type
+                    # Generating context menu.
+                    # menu = QMenu(self)
+                    # open_action = QAction('Open', self)
+                    # open_action.triggered.connect(lambda: print('Open'))
+                    # menu.addAction(open_action)
+                    # menu.popup(QCursor.pos())
+
+                    # Adding the item
                     self.treeWidget.addTopLevelItem(item)
             for i in range(6):
                 self.treeWidget.resizeColumnToContents(i)
+
+    def context_menu(self, event):
+        """
+        Shows context menu when right clicking a result item
+        :param event:
+        :return:
+        """
+        pass
 
     def build_db(self):
         """
