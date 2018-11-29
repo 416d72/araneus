@@ -102,7 +102,7 @@
           <string>Remember search history</string>
          </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -121,7 +121,7 @@
           <number>10</number>
          </property>
          <property name="value">
-          <number>1</number>
+          <number>10</number>
          </property>
         </widget>
        </item>
@@ -178,7 +178,7 @@
           <number>1024</number>
          </property>
          <property name="value">
-          <number>1</number>
+          <number>10</number>
          </property>
         </widget>
        </item>
@@ -193,6 +193,9 @@
         <widget class="QCheckBox" name="db_min_file_size_label">
          <property name="text">
           <string>Ignore files smaller than</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
          <property name="tristate">
           <bool>false</bool>

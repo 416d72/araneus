@@ -8,7 +8,7 @@ class Database(Connection):
     config = Configurations()
     min_size = 0
     if config.get_option('DATABASE', 'min_size_true', 'bool'):
-        min_size = config.get_option('DATABASE', 'min_size', 'int')
+        min_size = config.get_option('DATABASE', 'min_size', 'int') * 1024
     mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
 
     target = os.path.abspath(
@@ -65,11 +65,14 @@ class Database(Connection):
                 )
             )
             for file in f[2]:
+                size = os.stat(f[0] + '/' + file).st_size
+                if size < self.min_size:
+                    continue
                 cursor.execute(
                     "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
                     (
                         file,
-                        os.stat(f[0] + '/' + file).st_size,
+                        size,
                         f[0] + '/',
                         os.stat(f[0] + '/' + file).st_mtime,
                         os.stat(f[0] + '/' + file).st_atime,
@@ -80,4 +83,3 @@ class Database(Connection):
         cursor.execute('END TRANSACTION')
         con.commit()
         con.close()
-

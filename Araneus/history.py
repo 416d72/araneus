@@ -53,15 +53,10 @@ class History:
         """
         Fetch history at maximum count of 'count` argument
         :param count int
-        :return: list || False
+        :return: list
         """
         try:
             with open(self.history_file_location) as f:
                 return [line.strip() for line in f][:count]
         except Exception:
-            return False
-
-# test = History()
-# test.add('araneus')
-# test.clear()
-# print(test.get())
+            return Exception

@@ -4,6 +4,7 @@
 import random
 import time
 from datetime import datetime
+from Araneus.history import *
 from Araneus.database import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.Qt import QTreeWidgetItem
@@ -11,6 +12,7 @@ from PyQt5.uic import loadUi
 
 db = Database()
 c = Configurations()
+history = History()
 
 
 class Main(QMainWindow):
@@ -97,23 +99,32 @@ class Main(QMainWindow):
         Key press trigger
         :return: None
         """
-        self.search_bar.textChanged.connect(lambda: self.fetch(self.search_bar.text()))
+        self.search_btn.clicked.connect(lambda: self.fetch(self.search_bar.text()))
+        self.search_bar.returnPressed.connect(lambda: self.fetch(self.search_bar.text()))
 
     def fetch(self, term):
         """
-        Grab records from database
+        Grab results from database
         :return: None
         """
+        # Storing search term to history file:
+        history.add(term)
+        # Deleting all items from QTreeWidget
         self.treeWidget.clear()
-        for result in db.get(term):
-            item = QTreeWidgetItem(self.treeWidget)
-            item.setText(0, str(result[0]))  # Name
-            item.setText(1, self._convert(eval(result[1])))  # Size
-            item.setText(2, str(result[2]))  # Location
-            item.setText(3, datetime.utcfromtimestamp(float(result[3])).strftime('%Y-%m-%d %H:%M'))  # Modified
-            item.setText(4, datetime.utcfromtimestamp(float(result[4])).strftime('%Y-%m-%d %H:%M'))  # Accessed
-            item.setText(5, str(result[5]))  # Type
-            self.treeWidget.addTopLevelItem(item)
+        # Listing results
+        if len(term) > 0:
+            for result in db.get(term):
+                if not c.get_option('SEARCH', 'Show_hidden_files', 'bool') and result[0].startswith('.'):
+                    continue
+                else:
+                    item = QTreeWidgetItem(self.treeWidget)
+                    item.setText(0, str(result[0]))  # Name
+                    item.setText(1, self._convert(eval(result[1])))  # Size
+                    item.setText(2, str(result[2]))  # Location
+                    item.setText(3, datetime.utcfromtimestamp(float(result[3])).strftime('%Y-%m-%d %H:%M'))  # Modified
+                    item.setText(4, datetime.utcfromtimestamp(float(result[4])).strftime('%Y-%m-%d %H:%M'))  # Accessed
+                    item.setText(5, str(result[5]))  # Type
+                    self.treeWidget.addTopLevelItem(item)
 
     def build_db(self):
         """
@@ -126,14 +137,15 @@ class Main(QMainWindow):
         global pref
         pref = bdb
 
-    @staticmethod
     def preferences_dialog(self):
         """
         Showing preferences dialog
         :return: None
         """
-        from Araneus.preferences import new_window
-        new_window()
+        from Araneus.preferences import Preferences
+        global pref
+        pref = Preferences()
+        pref.buttonBox.accepted.connect(lambda: self.fetch(self.search_bar.text()))
 
     def build_all_action(self):
         """
@@ -159,18 +171,6 @@ class Main(QMainWindow):
         self.statusBar().showMessage('')
 
     @staticmethod
-    def _convert(size: int):
-        if size == 0:
-            return ''
-        power = 2 ** 10
-        n = 0
-        d = {0: 'Bytes', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
-        while size >= power:
-            size /= power
-            n += 1
-        return "%.2f " % round(size, 2) + d[n]
-
-    @staticmethod
     def about_dialog(self):
         """
         Showing the about dialog | Influenced by the about dialog from 'Zeal' app
@@ -178,6 +178,20 @@ class Main(QMainWindow):
         """
         from Araneus.about import new_window
         new_window()
+
+    @staticmethod
+    def _convert(size: int):
+        if size == 0:
+            return ''
+        elif size < 1024:
+            return '%d Bytes' % size
+        power = 2 ** 10
+        n = 0
+        d = {0: 'Bytes', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
+        while size >= power:
+            size /= power
+            n += 1
+        return "%.2f " % round(size, 2) + d[n]
 
 
 def main():
