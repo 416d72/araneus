@@ -12,7 +12,7 @@ class Database(Connection):
     mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
 
     target = os.path.abspath(
-        os.path.expanduser('~') + '/Dev/Python/Automation/')  # Currently only user's home folder will be indexed
+        os.path.expanduser('~') + '/Dev/')  # Currently only user's home folder will be indexed
 
     def build(self):
         """
@@ -57,7 +57,7 @@ class Database(Connection):
                 "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
                 (
                     f[0].split('/')[-1],
-                    '',
+                    0,
                     f[0] + '/',
                     os.stat(f[0] + '/').st_mtime,
                     os.stat(f[0] + '/').st_atime,

@@ -3,8 +3,10 @@
 
 import random
 import time
+from datetime import datetime
 from Araneus.database import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.Qt import QTreeWidgetItem
 from PyQt5.uic import loadUi
 
 db = Database()
@@ -23,6 +25,7 @@ class Main(QMainWindow):
         self.get_view_columns()
         self.triggers()
         self.set_view_columns()
+        self.press()
 
     def check_empty_db(self):
         """
@@ -89,6 +92,29 @@ class Main(QMainWindow):
         else:
             self.treeWidget.hideColumn(5)
 
+    def press(self):
+        """
+        Key press trigger
+        :return: None
+        """
+        self.search_bar.textChanged.connect(lambda: self.fetch(self.search_bar.text()))
+
+    def fetch(self, term):
+        """
+        Grab records from database
+        :return: None
+        """
+        self.treeWidget.clear()
+        for result in db.get(term):
+            item = QTreeWidgetItem(self.treeWidget)
+            item.setText(0, str(result[0]))  # Name
+            item.setText(1, self._convert(eval(result[1])))  # Size
+            item.setText(2, str(result[2]))  # Location
+            item.setText(3, datetime.utcfromtimestamp(float(result[3])).strftime('%Y-%m-%d %H:%M'))  # Modified
+            item.setText(4, datetime.utcfromtimestamp(float(result[4])).strftime('%Y-%m-%d %H:%M'))  # Accessed
+            item.setText(5, str(result[5]))  # Type
+            self.treeWidget.addTopLevelItem(item)
+
     def build_db(self):
         """
         Show the build_db dialog
@@ -133,14 +159,16 @@ class Main(QMainWindow):
         self.statusBar().showMessage('')
 
     @staticmethod
-    def _convert(self, size: int):
+    def _convert(size: int):
+        if size == 0:
+            return ''
         power = 2 ** 10
         n = 0
         d = {0: 'Bytes', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
         while size >= power:
             size /= power
             n += 1
-        return "%.2f " % round(size, 2) + d[n], int(size)
+        return "%.2f " % round(size, 2) + d[n]
 
     @staticmethod
     def about_dialog(self):

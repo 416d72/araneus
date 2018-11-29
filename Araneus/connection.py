@@ -54,7 +54,9 @@ class Connection:
         try:
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            command = "SELECT * FROM `{}` WHERE `name` LIKE ?".format(self.table)
+            command = "SELECT `name`,`size`,`location`,`modified`,`accessed`,`type` FROM `{}` WHERE `name` LIKE " \
+                      "?".format(
+                self.table)
             cursor.execute(command, ("%" + search_term + "%",))
             return cursor.fetchall()
         except:
@@ -80,4 +82,3 @@ class Connection:
             return True
         except:
             raise Exception
-
