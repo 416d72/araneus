@@ -1,6 +1,8 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 
+import random
+import time
 from Araneus.database import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.uic import loadUi
@@ -17,6 +19,7 @@ class Main(QMainWindow):
     def __init__(self):
         super(Main, self).__init__()
         loadUi(load_ui('main_window'), self)
+        self.progressBar.hide()
         self.get_view_columns()
         self.triggers()
         self.set_view_columns()
@@ -111,8 +114,22 @@ class Main(QMainWindow):
         Running 'Build' task
         :return: None
         """
+        self.progressBar.show()
         self.statusBar().showMessage('Building')
+        for i in range(0, 15):
+            time.sleep(0.04)
+            self.progressBar.setValue(i)
+        time.sleep(random.uniform(0, 1))
+        self.progressBar.setValue(random.randint(16, 33))
+        time.sleep(random.uniform(0, 1))
         db.build()
+        self.progressBar.setValue(random.randint(34, 66))
+        time.sleep(random.uniform(0, 1))
+        self.progressBar.setValue(random.randint(67, 94))
+        for i in range(95, 101):
+            time.sleep(0.1)
+            self.progressBar.setValue(i)
+        self.progressBar.hide()
         self.statusBar().showMessage('')
 
     @staticmethod
