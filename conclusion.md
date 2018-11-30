@@ -24,7 +24,7 @@ Here are things that I learnt through out making this app
     - Passing lists or tuples' items as method parameters like this:
         `method(*tuple)`
     - Converting from unix timestamp to time format using `datetime` like this:
-        `datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')`
+        `datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')` 
 ### QT
 - Embedding shortcuts in QT designer app templates instead of using event listener in the controller.
 - Figured out how to load several Qt windows thanks to this old answer [here](http://python.6.x6.nabble.com/QCoreApplication-exec-The-event-loop-is-already-running-tp1795366p1795378.html)
@@ -36,6 +36,7 @@ And here are things that I'd like to learn deeper in the near future:
 - Exception handling.
 - Multi processing.
 - Multi threading.
+- Logging.
 - Test Driven Development.
 - Documentation.
 - Cryptography.

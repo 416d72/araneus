@@ -11,7 +11,6 @@ class Connection:
     """
     std_db = config_dir + 'database'
     tmp_db = config_dir + 'temporary_database'
-    table = 'data'
 
     def __init__(self):
         self.create()
@@ -27,7 +26,7 @@ class Connection:
             """
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            cursor.execute("CREATE TABLE IF NOT EXISTS {} "
+            cursor.execute("CREATE TABLE IF NOT EXISTS `data` "
                            "("
                            "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
                            "`name` TEXT,"
@@ -36,12 +35,12 @@ class Connection:
                            "`modified` TEXT,"
                            "`accessed` TEXT,"
                            "`type` TEXT"
-                           "); ".format(self.table))
+                           "); ")
             con.commit()
             con.close()
             return True
         except Exception:
-            raise Exception
+            return Exception
 
     def create_tmp(self):
         """
@@ -54,7 +53,7 @@ class Connection:
             """
             con = sqlite3.connect(self.tmp_db)
             cursor = con.cursor()
-            cursor.execute("CREATE TABLE IF NOT EXISTS {} "
+            cursor.execute("CREATE TABLE IF NOT EXISTS `data` "
                            "("
                            "`name` TEXT,"
                            "`size` TEXT,"
@@ -62,12 +61,12 @@ class Connection:
                            "`modified` TEXT,"
                            "`accessed` TEXT,"
                            "`type` TEXT"
-                           "); ".format(self.table))
+                           "); ")
             con.commit()
             con.close()
             return True
         except Exception:
-            raise Exception
+            return Exception
 
     def get(self, search_term):
         """
@@ -78,29 +77,29 @@ class Connection:
         try:
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            command = "SELECT * FROM `{}` WHERE `name` LIKE ?".format(self.table)
+            command = "SELECT * FROM `data` WHERE `name` LIKE ?"
             cursor.execute(command, ("%" + search_term + "%",))
             return cursor.fetchall()
         except:
-            raise Exception
+            return Exception
 
     def fetch_all(self):
         try:
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            command = "SELECT * FROM `{}`".format(self.table)
+            command = "SELECT * FROM `data`"
             cursor.execute(command)
             return cursor.fetchall()
         except Exception:
-            raise Exception
+            return Exception
 
     def drop(self):
         try:
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            cursor.execute("DROP TABLE `{}`".format(self.table))
+            cursor.execute("DROP TABLE `data`")
             con.commit()
             con.close()
             return True
-        except:
-            raise Exception
+        except Exception:
+            return Exception

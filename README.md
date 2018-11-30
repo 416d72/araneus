@@ -5,6 +5,7 @@
 - Linux
 - Python3
 - PyQt5
+- asyncio
 - python-magic
 # Usage:
 > Instructions and examples will be available in the first stable release.
