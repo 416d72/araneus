@@ -39,6 +39,7 @@ class Main(QMainWindow):
         if not db.fetch_all():
             self.search_bar.setEnabled(0)
             self.search_btn.setEnabled(0)
+            self.statusBar().showMessage('No database found!')
             self.build_db()
 
     def triggers(self):
@@ -110,13 +111,13 @@ class Main(QMainWindow):
         """
         Grab results from database
         :return: None
-        TODO: multi processing | threading here
         """
         # Checking if database exists:
         c.create_config_file()
         db.create()
         self.check_empty_db()
         # Storing search term to history file:
+        self.statusBar().showMessage('Ready')
         history.add(term)
         # Deleting all items from QTreeWidget
         self.treeWidget.clear()
@@ -182,12 +183,12 @@ class Main(QMainWindow):
         :return: None
         """
         self.progressBar.show()
-        self.statusBar().showMessage('Building')
         for progress in db.build():
             self.progressBar.setValue(progress)
+            self.statusBar().showMessage('Building')
         self.progressBar.setValue(100)
         self.progressBar.hide()
-        self.statusBar().showMessage('')
+        self.statusBar().showMessage('Ready')
         self.search_bar.setEnabled(1)
         self.search_btn.setEnabled(1)
 
