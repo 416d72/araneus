@@ -44,7 +44,8 @@ class Main(QMainWindow):
     def triggers(self):
         self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
-        self.actionBuild_All.triggered.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
+        # self.actionBuild_All.triggered.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
+        self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
         self.actionAbout.triggered.connect(self.about_dialog)
 
     def get_view_columns(self):
@@ -160,7 +161,8 @@ class Main(QMainWindow):
         """
         from Araneus.build_db import BuildDB, new_window
         bdb = BuildDB()
-        bdb.buttonBox.accepted.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
+        # bdb.buttonBox.accepted.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
+        bdb.buttonBox.accepted.connect(lambda: self.build_all_action())
         global pref
         pref = bdb
 
@@ -213,16 +215,16 @@ class Main(QMainWindow):
         return "%.2f " % round(size, 2) + d[n]
 
 
-class ProcessRunnable(QRunnable):
-    def __init__(self, target):
-        QRunnable.__init__(self)
-        self.t = target
-
-    def run(self):
-        self.t()
-
-    def start(self):
-        QThreadPool.globalInstance().start(self)
+# class ProcessRunnable(QRunnable):
+#     def __init__(self, target):
+#         QRunnable.__init__(self)
+#         self.t = target
+#
+#     def run(self):
+#         self.t()
+#
+#     def start(self):
+#         QThreadPool.globalInstance().start(self)
 
 
 def main():
