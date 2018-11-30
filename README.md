@@ -3,7 +3,7 @@
 ![Logo](Araneus/UI/icons/banner.png)
 # Dependencies:
 - Linux
-- Python3.6+
+- Python3
 - PyQt5
 - python-magic
 # Usage:
