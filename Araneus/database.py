@@ -28,7 +28,7 @@ class Database(Connection):
     def build(self):
         """
         Build a new database
-        :return: bool
+        :return: mix
         """
         try:
             super().create_tmp()
