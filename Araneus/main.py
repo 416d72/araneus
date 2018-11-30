@@ -13,6 +13,18 @@ c = Configurations()
 history = History()
 
 
+class ProcessRunnable(QRunnable):
+    def __init__(self, target):
+        QRunnable.__init__(self)
+        self.t = target
+
+    def run(self):
+        self.t()
+
+    def start(self):
+        QThreadPool.globalInstance().start(self)
+
+
 class Main(QMainWindow):
     view_col_modified = c.get_option('VIEW_COLUMNS', 'modified', 'bool')
     view_col_accessed = c.get_option('VIEW_COLUMNS', 'accessed', 'bool')
@@ -20,6 +32,7 @@ class Main(QMainWindow):
 
     def __init__(self):
         # TODO: add icons to UI
+        # TODO: show last entered keywords
         super(Main, self).__init__()
         self.thread()
         loadUi(load_ui('main_window'), self)
@@ -46,7 +59,7 @@ class Main(QMainWindow):
         self.actionPreferences.triggered.connect(self.preferences_dialog)
         self.actionBuild_All.triggered.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
         # self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
-        self.actionAbout.triggered.connect(self.about_dialog)
+        self.actionAbout.triggered.connect(about_dialog)
 
     def get_view_columns(self):
         """
@@ -129,7 +142,7 @@ class Main(QMainWindow):
                     # Setting item and it's properties
                     item = QTreeWidgetItem(self.treeWidget)
                     item.setText(0, str(result[0]))  # Name
-                    item.setText(1, self._convert(eval(result[1])))  # Size
+                    item.setText(1, convert(eval(result[1])))  # Size
                     item.setText(2, str(result[2]))  # Location
                     item.setText(3, datetime.utcfromtimestamp(float(result[3])).strftime('%Y-%m-%d %H:%M'))  # Modified
                     item.setText(4, datetime.utcfromtimestamp(float(result[4])).strftime('%Y-%m-%d %H:%M'))  # Accessed
@@ -191,41 +204,6 @@ class Main(QMainWindow):
         self.statusBar().showMessage('Ready')
         self.search_bar.setEnabled(1)
         self.search_btn.setEnabled(1)
-
-    @staticmethod
-    def about_dialog():
-        """
-        Showing the about dialog | Influenced by the about dialog from 'Zeal' app
-        :return: None
-        """
-        from Araneus.about import new_window
-        new_window()
-
-    @staticmethod
-    def _convert(size: int):
-        if size == 0:
-            return ''
-        elif size < 1024:
-            return '%d Bytes' % size
-        power = 2 ** 10
-        n = 0
-        d = {0: 'Bytes', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
-        while size >= power:
-            size /= power
-            n += 1
-        return "%.2f " % round(size, 2) + d[n]
-
-
-class ProcessRunnable(QRunnable):
-    def __init__(self, target):
-        QRunnable.__init__(self)
-        self.t = target
-
-    def run(self):
-        self.t()
-
-    def start(self):
-        QThreadPool.globalInstance().start(self)
 
 
 def main():

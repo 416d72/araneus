@@ -39,6 +39,34 @@ def load_ui(name):
     return str(os.path.abspath(os.getcwd()) + '/UI/' + name + '.ui')
 
 
+def convert(size: int):
+    """
+    Convert size from Bytes to KB,MB,GB,TB.
+    :param size: int
+    :return: str
+    """
+    if size == 0:
+        return ''
+    elif size < 1024:
+        return '%d Bytes' % size
+    power = 2 ** 10
+    n = 0
+    d = {0: 'Bytes', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
+    while size >= power:
+        size /= power
+        n += 1
+    return "%.2f " % round(size, 2) + d[n]
+
+
+def about_dialog():
+    """
+    Showing the about dialog | Influenced by the about dialog from 'Zeal' app
+    :return: None
+    """
+    from Araneus.about import new_window
+    new_window()
+
+
 if __name__ == "__main__":
     if is_running():
         sys.exit("Only one instance allowed")
