@@ -33,7 +33,7 @@ class Main(QMainWindow):
     def __init__(self):
         # TODO: add icons to UI
         # TODO: show last entered keywords
-        super(Main, self).__init__()
+        super(Main, self).__init__(parent=None)
         self.thread()
         loadUi(load_ui('main_window'), self)
         self.progressBar.hide()
@@ -197,7 +197,7 @@ class Main(QMainWindow):
         self.progressBar.show()
         db.build()
         # for progress in db.build():
-        #     self.progressBar.setValue(progress)
+        #     self.update_progress_bar(progress)
         #     self.statusBar().showMessage('Building')
         self.progressBar.setValue(100)
         self.progressBar.hide()
