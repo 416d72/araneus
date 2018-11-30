@@ -1,13 +1,12 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
-
-import random
 import time
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.Qt import QTreeWidgetItem, QMenu, QAction, QCursor
+from PyQt5.Qt import QTreeWidgetItem
+
 from PyQt5.uic import loadUi
 
 db = Database()
@@ -22,7 +21,8 @@ class Main(QMainWindow):
 
     def __init__(self):
         # TODO: add icons to UI
-        super(Main, self).__init__()
+        super(Main, self).__init__(parent=None)
+        self.thread()
         loadUi(load_ui('main_window'), self)
         self.progressBar.hide()
         self.get_view_columns()
@@ -111,6 +111,10 @@ class Main(QMainWindow):
         :return: None
         TODO: multi processing | threading here
         """
+        # Checking if database exists:
+        c.create_config_file()
+        db.create()
+        self.check_empty_db()
         # Storing search term to history file:
         history.add(term)
         # Deleting all items from QTreeWidget
@@ -177,19 +181,9 @@ class Main(QMainWindow):
         """
         self.progressBar.show()
         self.statusBar().showMessage('Building')
-        for i in range(0, 15):
-            time.sleep(0.04)
-            self.progressBar.setValue(i)
-        time.sleep(random.uniform(0, 1))
-        self.progressBar.setValue(random.randint(16, 33))
-        time.sleep(random.uniform(0, 1))
-        db.build()
-        self.progressBar.setValue(random.randint(34, 66))
-        time.sleep(random.uniform(0, 1))
-        self.progressBar.setValue(random.randint(67, 94))
-        for i in range(95, 101):
-            time.sleep(0.1)
-            self.progressBar.setValue(i)
+        for progress in db.build():
+            self.progressBar.setValue(progress)
+        self.progressBar.setValue(100)
         self.progressBar.hide()
         self.statusBar().showMessage('')
         self.search_bar.setEnabled(1)
@@ -222,7 +216,9 @@ class Main(QMainWindow):
 def main():
     main_w = QApplication(sys.argv)
     main_window = Main()
-    main_window.showMaximized()
+    main_window.show()
+    # TODO: show maximized
+    # main_window.showMaximized()
     main_window.check_empty_db()
     sys.exit(main_w.exec_())
 

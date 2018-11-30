@@ -30,7 +30,8 @@ class Configurations:
         except ValueError:
             print(ValueError)
 
-    def create_config_dir(self):
+    @staticmethod
+    def create_config_dir():
         """
         Creates Application's directory
         :return: Bool
@@ -123,5 +124,3 @@ class Configurations:
             return self.get_option(section, option)
         except ValueError:
             return ValueError("Error occurred while changing preferences")
-
-test = Configurations()

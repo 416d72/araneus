@@ -27,7 +27,7 @@ def is_running():
             pid = int(next(f))
         return os.kill(pid, 0)
     except Exception:
-        return False
+        return Exception
 
 
 def load_ui(name):
