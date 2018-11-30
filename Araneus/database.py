@@ -90,9 +90,9 @@ class Database(Connection):
                                   mime=True)
                     )
                 )
-            self.counter += 1
-            percent = 100 * self.counter / self.total_dirs
-            yield percent
+            # self.counter += 1
+            # percent = 100 * self.counter / self.total_dirs
+            # yield percent
         cursor.execute('END TRANSACTION')
         con.commit()
         con.close()
