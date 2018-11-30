@@ -3,9 +3,8 @@
 ![Logo](Araneus/UI/icons/banner.png)
 # Dependencies:
 - Linux
-- Python3
+- Python3.6+
 - PyQt5
-- asyncio
 - python-magic
 # Usage:
 > Instructions and examples will be available in the first stable release.
