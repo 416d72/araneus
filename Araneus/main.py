@@ -111,6 +111,15 @@ class Main(QMainWindow):
         else:
             self.treeWidget.hideColumn(5)
 
+    def history(self, add_new: str = ''):
+        """
+        Get last entered keywords
+        :return: None
+        """
+        if add_new:
+            history.add(add_new)
+        pass
+
     def press(self):
         """
         Key press trigger
@@ -128,9 +137,9 @@ class Main(QMainWindow):
         c.create_config_file()
         db.create()
         self.check_empty_db()
-        # Storing search term to history file:
         self.statusBar().showMessage('Ready')
-        history.add(term)
+        # Storing search term to history file:
+        self.history(term)
         # Deleting all items from QTreeWidget
         self.treeWidget.clear()
         # Listing results
