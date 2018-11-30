@@ -1,6 +1,5 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
-import time
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
@@ -21,7 +20,7 @@ class Main(QMainWindow):
 
     def __init__(self):
         # TODO: add icons to UI
-        super(Main, self).__init__(parent=None)
+        super(Main, self).__init__()
         self.thread()
         loadUi(load_ui('main_window'), self)
         self.progressBar.hide()
@@ -45,8 +44,8 @@ class Main(QMainWindow):
     def triggers(self):
         self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
-        # self.actionBuild_All.triggered.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
-        self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
+        self.actionBuild_All.triggered.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
+        # self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
         self.actionAbout.triggered.connect(self.about_dialog)
 
     def get_view_columns(self):
@@ -160,10 +159,10 @@ class Main(QMainWindow):
         Show the build_db dialog
         :return: None
         """
-        from Araneus.build_db import BuildDB, new_window
+        from Araneus.build_db import BuildDB
         bdb = BuildDB()
-        # bdb.buttonBox.accepted.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
-        bdb.buttonBox.accepted.connect(lambda: self.build_all_action())
+        bdb.buttonBox.accepted.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
+        # bdb.buttonBox.accepted.connect(lambda: self.build_all_action())
         global pref
         pref = bdb
 
@@ -183,9 +182,10 @@ class Main(QMainWindow):
         :return: None
         """
         self.progressBar.show()
-        for progress in db.build():
-            self.progressBar.setValue(progress)
-            self.statusBar().showMessage('Building')
+        db.build()
+        # for progress in db.build():
+        #     self.progressBar.setValue(progress)
+        #     self.statusBar().showMessage('Building')
         self.progressBar.setValue(100)
         self.progressBar.hide()
         self.statusBar().showMessage('Ready')
@@ -193,7 +193,7 @@ class Main(QMainWindow):
         self.search_btn.setEnabled(1)
 
     @staticmethod
-    def about_dialog(self):
+    def about_dialog():
         """
         Showing the about dialog | Influenced by the about dialog from 'Zeal' app
         :return: None
@@ -216,16 +216,16 @@ class Main(QMainWindow):
         return "%.2f " % round(size, 2) + d[n]
 
 
-# class ProcessRunnable(QRunnable):
-#     def __init__(self, target):
-#         QRunnable.__init__(self)
-#         self.t = target
-#
-#     def run(self):
-#         self.t()
-#
-#     def start(self):
-#         QThreadPool.globalInstance().start(self)
+class ProcessRunnable(QRunnable):
+    def __init__(self, target):
+        QRunnable.__init__(self)
+        self.t = target
+
+    def run(self):
+        self.t()
+
+    def start(self):
+        QThreadPool.globalInstance().start(self)
 
 
 def main():
