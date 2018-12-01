@@ -10,7 +10,6 @@ from PyQt5.uic import loadUi
 
 db = Database()
 c = Configurations()
-history = History()
 
 
 class Main(QMainWindow):
@@ -106,17 +105,15 @@ class Main(QMainWindow):
         Get last entered keywords
         :return: None
         """
-        if add_new:
-            # Add a new entry to history file
-            history.add(add_new)
-        else:
-            # Show last keywords
-            completer = QCompleter()
-            self.search_bar.setCompleter(completer)
-            model = QStringListModel()
-            completer.setModel(model)
-            model.setStringList(history.get())
-            self.search_bar.show()
+        history = History()
+        # Add a new entry to history file
+        history.add(add_new)
+        # Show last keywords
+        completer = QCompleter()
+        self.search_bar.setCompleter(completer)
+        model = QStringListModel()
+        completer.setModel(model)
+        model.setStringList(history.get())
 
     def press(self):
         """

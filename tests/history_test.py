@@ -17,6 +17,9 @@ class TestHistory(unittest.TestCase):
     def test_get(self):
         self.assertIsInstance(History().get(), list)
 
+    def test_sanitise(self):
+        self.assertTrue(History().sanitise())
+
 
 if __name__ == '__main__':
     unittest.main()

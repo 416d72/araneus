@@ -17,8 +17,8 @@ class History:
         :return: bool
         """
         try:
-            open(self.history_file_location).close()
-            return True
+            with open(self.history_file_location, 'a'):
+                return True
         except IOError:
             return IOError("Failed to open the history file")
 
@@ -41,10 +41,12 @@ class History:
         :return: bool
         """
         try:
-            with open(self.history_file_location, 'r') as f:
-                original = f.read()
-            with open(self.history_file_location, 'w') as f:
-                f.write('{}\n{}'.format(term, original))
+            if term is not "" and term not in self.get():
+                with open(self.history_file_location, 'r') as f:
+                    original = f.read()
+                with open(self.history_file_location, 'w') as f:
+                    f.write('{}\n{}'.format(term, original))
+            self.sanitise()
             return True
         except IOError:
             return IOError("Failed to open the history file")
@@ -56,15 +58,21 @@ class History:
         """
         try:
             with open(self.history_file_location, 'r') as f:
-                all = 0
-                original = []
-                for i, d in enumerate(f):
-                    all += i
-                    original.append(d)
-            if all > self.max_items:
-                with open(self.history_file_location, 'w') as f:
-                    for item in original[:self.max_items]:
-                        f.write(item)
-            return original[:self.max_items]
+                return f.read().split()
         except IOError:
             return IOError("Failed to open the history file")
+
+    def sanitise(self):
+        """
+        Check if history file has more lines than user's preference and if it's true, it simply deletes the last line
+        which is the oldest entry
+        :return: bool
+        """
+        try:
+            with open(self.history_file_location, 'r') as history_file:
+                count = history_file.read().split()
+            if len(count) > self.max_items:
+                with open(self.history_file_location, 'w') as new_history_file:
+                    new_history_file.writelines([item + '\n' for item in count[:-1]])
+        except IOError:
+            return IOError('Failed to open the history file')
