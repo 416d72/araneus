@@ -17,7 +17,7 @@ class History:
         :return: bool
         """
         try:
-            with open(self.history_file_location, 'a'):
+            with open(self.history_file_location, 'r'):
                 return True
         except IOError:
             return IOError("Failed to open the history file")
@@ -46,19 +46,21 @@ class History:
                     original = f.read()
                 with open(self.history_file_location, 'w') as f:
                     f.write('{}\n{}'.format(term, original))
-            self.sanitise()
+                self.sanitise()
             return True
         except IOError:
             return IOError("Failed to open the history file")
 
-    def get(self):
+    def get(self, limit: int = 0):
         """
         Fetch history keywords
         :return: list
         """
         try:
+            if limit == 0:
+                limit = self.max_items
             with open(self.history_file_location, 'r') as f:
-                return f.read().split()
+                return f.read().split()[:limit]
         except IOError:
             return IOError("Failed to open the history file")
 

@@ -99,7 +99,7 @@ class Configurations:
             self.validate()
             config.read(self.conf_file_path)
             if method == 'int':
-                return config.getint(section, option)
+                return abs(config.getint(section, option))
             elif method == 'bool':
                 return config.getboolean(section, option)
             else:
