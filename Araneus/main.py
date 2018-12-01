@@ -1,11 +1,11 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
+import time
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.Qt import QTreeWidgetItem, QRunnable, QThreadPool
-
+from PyQt5.QtWidgets import QMainWindow, QApplication, QCompleter
+from PyQt5.Qt import QTreeWidgetItem, QRunnable, QThreadPool, QObject, pyqtSignal
 from PyQt5.uic import loadUi
 
 db = Database()
@@ -13,7 +13,22 @@ c = Configurations()
 history = History()
 
 
+class Communicate(QObject):
+    myGUI_signal = pyqtSignal(str)
+
+
+def MyThread(callbackFunc):
+    # Setup the signal-slot mechanism.
+    src = Communicate()
+    src.myGUI_signal.connect(callbackFunc)
+    src.myGUI_signal.emit(callbackFunc)
+
+
 class ProcessRunnable(QRunnable):
+    """
+    Manages multiple threads to be used while building database.
+    """
+
     def __init__(self, target):
         QRunnable.__init__(self)
         self.t = target
@@ -37,6 +52,7 @@ class Main(QMainWindow):
         self.thread()
         loadUi(load_ui('main_window'), self)
         self.progressBar.hide()
+        self.statusBar().showMessage('Ready')
         self.get_view_columns()
         self.triggers()
         self.set_view_columns()
@@ -203,16 +219,19 @@ class Main(QMainWindow):
         Running 'Build' task
         :return: None
         """
-        self.progressBar.show()
+        # self.actionBuild_All.setDisabled(True)
+        # self.progressBar.show()
+        self.statusBar().showMessage('Building')
         db.build()
         # for progress in db.build():
         #     self.update_progress_bar(progress)
         #     self.statusBar().showMessage('Building')
-        self.progressBar.setValue(100)
-        self.progressBar.hide()
+        # self.progressBar.setValue(100)
+        # self.progressBar.hide()
         self.statusBar().showMessage('Ready')
         self.search_bar.setEnabled(1)
         self.search_btn.setEnabled(1)
+        # self.actionBuild_All.setDisabled(False)
 
 
 def main():

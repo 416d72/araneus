@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>754</width>
-    <height>600</height>
+    <width>640</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -25,13 +25,20 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="QLineEdit" name="search_bar">
-      <property name="focusPolicy">
-       <enum>Qt::StrongFocus</enum>
+    <item row="2" column="0" colspan="2">
+     <widget class="QProgressBar" name="progressBar">
+      <property name="enabled">
+       <bool>true</bool>
       </property>
-      <property name="placeholderText">
-       <string>Search ...</string>
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="search_btn">
+      <property name="text">
+       <string>Search</string>
       </property>
      </widget>
     </item>
@@ -93,19 +100,12 @@
       </column>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
-     <widget class="QProgressBar" name="progressBar">
-      <property name="enabled">
-       <bool>true</bool>
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="search_bar">
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
       </property>
-      <property name="value">
-       <number>0</number>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="search_btn">
-      <property name="text">
+      <property name="placeholderText">
        <string>Search</string>
       </property>
      </widget>
@@ -117,7 +117,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>754</width>
+     <width>640</width>
      <height>22</height>
     </rect>
    </property>
@@ -195,22 +195,6 @@
     <string>Ctrl+B</string>
    </property>
   </action>
-  <action name="actionClean">
-   <property name="text">
-    <string>Clean</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+B</string>
-   </property>
-  </action>
-  <action name="actionDonate">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Donate</string>
-   </property>
-  </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
@@ -246,28 +230,12 @@
     <string>Type</string>
    </property>
   </action>
-  <action name="actionReload">
-   <property name="text">
-    <string>Reload</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+R</string>
-   </property>
-  </action>
   <action name="actionProperties">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="text">
     <string>Properties</string>
-   </property>
-  </action>
-  <action name="actionNew_window">
-   <property name="text">
-    <string>New window</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>
