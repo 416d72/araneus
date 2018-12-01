@@ -13,33 +13,6 @@ c = Configurations()
 history = History()
 
 
-class Communicate(QObject):
-    myGUI_signal = pyqtSignal(str)
-
-
-def MyThread(callbackFunc):
-    # Setup the signal-slot mechanism.
-    src = Communicate()
-    src.myGUI_signal.connect(callbackFunc)
-    src.myGUI_signal.emit(callbackFunc)
-
-
-class ProcessRunnable(QRunnable):
-    """
-    Manages multiple threads to be used while building database.
-    """
-
-    def __init__(self, target):
-        QRunnable.__init__(self)
-        self.t = target
-
-    def run(self):
-        self.t()
-
-    def start(self):
-        QThreadPool.globalInstance().start(self)
-
-
 class Main(QMainWindow):
     view_col_modified = c.get_option('VIEW_COLUMNS', 'modified', 'bool')
     view_col_accessed = c.get_option('VIEW_COLUMNS', 'accessed', 'bool')
@@ -73,8 +46,8 @@ class Main(QMainWindow):
     def triggers(self):
         self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
-        self.actionBuild_All.triggered.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
-        # self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
+        # self.actionBuild_All.triggered.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
+        self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
         self.actionAbout.triggered.connect(about_dialog)
 
     def get_view_columns(self):
@@ -199,8 +172,8 @@ class Main(QMainWindow):
         """
         from Araneus.build_db import BuildDB
         bdb = BuildDB()
-        bdb.buttonBox.accepted.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
-        # bdb.buttonBox.accepted.connect(lambda: self.build_all_action())
+        # bdb.buttonBox.accepted.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
+        bdb.buttonBox.accepted.connect(lambda: self.build_all_action())
         global pref
         pref = bdb
 
