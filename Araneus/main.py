@@ -4,8 +4,8 @@ import time
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
-from PyQt5.QtWidgets import QMainWindow, QApplication, QCompleter
-from PyQt5.Qt import QTreeWidgetItem, QRunnable, QThreadPool, QObject, pyqtSignal
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.Qt import QTreeWidgetItem, QCompleter
 from PyQt5.uic import loadUi
 
 db = Database()
@@ -21,7 +21,7 @@ class Main(QMainWindow):
     def __init__(self):
         # TODO: add icons to UI
         # TODO: show last entered keywords
-        super(Main, self).__init__(parent=None)
+        super(Main, self).__init__()
         self.thread()
         loadUi(load_ui('main_window'), self)
         self.progressBar.hide()
@@ -192,19 +192,19 @@ class Main(QMainWindow):
         Running 'Build' task
         :return: None
         """
-        # self.actionBuild_All.setDisabled(True)
-        # self.progressBar.show()
-        self.statusBar().showMessage('Building')
-        db.build()
-        # for progress in db.build():
-        #     self.update_progress_bar(progress)
-        #     self.statusBar().showMessage('Building')
-        # self.progressBar.setValue(100)
-        # self.progressBar.hide()
+        self.actionBuild_All.setDisabled(True)
+        self.progressBar.show()
+        for progress in db.build():
+            self.progressBar.setValue(progress)
+            self.statusBar().showMessage('Building')
+        self.search_bar.setDisabled(True)
+        db.move_tmp_db()
+        self.search_bar.setDisabled(False)
+        self.progressBar.hide()
         self.statusBar().showMessage('Ready')
         self.search_bar.setEnabled(1)
         self.search_btn.setEnabled(1)
-        # self.actionBuild_All.setDisabled(False)
+        self.actionBuild_All.setDisabled(False)
 
 
 def main():
