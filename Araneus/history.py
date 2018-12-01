@@ -64,8 +64,8 @@ class History:
 
     def sanitise(self):
         """
-        Check if history file has more lines than user's preference and if it's true, it simply deletes the last line
-        which is the oldest entry
+        Check if history file has more lines than user's preference and if it's true, it simply keep the
+        number that user chose and deletes anything older than it.
         :return: bool
         """
         try:
@@ -73,6 +73,7 @@ class History:
                 count = history_file.read().split()
             if len(count) > self.max_items:
                 with open(self.history_file_location, 'w') as new_history_file:
-                    new_history_file.writelines([item + '\n' for item in count[:-1]])
+                    new_history_file.writelines([item + '\n' for item in count[:self.max_items]])
+            return True
         except IOError:
             return IOError('Failed to open the history file')
