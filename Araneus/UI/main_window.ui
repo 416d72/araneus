@@ -172,6 +172,9 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
+   <property name="icon">
+    <iconset theme="exit"/>
+   </property>
    <property name="text">
     <string>Quit</string>
    </property>
@@ -180,6 +183,9 @@
    </property>
   </action>
   <action name="actionPreferences">
+   <property name="icon">
+    <iconset theme="document-properties"/>
+   </property>
    <property name="text">
     <string>Preferences</string>
    </property>
@@ -188,6 +194,9 @@
    </property>
   </action>
   <action name="actionBuild_All">
+   <property name="icon">
+    <iconset theme="system-run"/>
+   </property>
    <property name="text">
     <string>Build All</string>
    </property>
@@ -196,6 +205,9 @@
    </property>
   </action>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset theme="help"/>
+   </property>
    <property name="text">
     <string>About</string>
    </property>
@@ -233,6 +245,9 @@
   <action name="actionProperties">
    <property name="enabled">
     <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset theme="document"/>
    </property>
    <property name="text">
     <string>Properties</string>

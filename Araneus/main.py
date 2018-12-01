@@ -18,8 +18,6 @@ class Main(QMainWindow):
     view_col_type = c.get_option('VIEW_COLUMNS', 'type', 'bool')
 
     def __init__(self):
-        # TODO: add icons to UI
-        # TODO: show last entered keywords
         super(Main, self).__init__()
         self.thread()
         loadUi(load_ui('main_window'), self)
