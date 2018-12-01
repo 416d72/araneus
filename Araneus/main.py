@@ -5,7 +5,7 @@ from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
 from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.Qt import QTreeWidgetItem, QCompleter
+from PyQt5.Qt import QTreeWidgetItem, QCompleter, QStringListModel
 from PyQt5.uic import loadUi
 
 db = Database()
@@ -30,6 +30,7 @@ class Main(QMainWindow):
         self.triggers()
         self.set_view_columns()
         self.press()
+        self.history()
 
     def check_empty_db(self):
         """
@@ -106,8 +107,16 @@ class Main(QMainWindow):
         :return: None
         """
         if add_new:
+            # Add a new entry to history file
             history.add(add_new)
-        pass
+        else:
+            # Show last keywords
+            completer = QCompleter()
+            self.search_bar.setCompleter(completer)
+            model = QStringListModel()
+            completer.setModel(model)
+            model.setStringList(history.get())
+            self.search_bar.show()
 
     def press(self):
         """
