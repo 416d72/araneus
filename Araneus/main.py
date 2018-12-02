@@ -23,11 +23,13 @@ class Main(QMainWindow):
         loadUi(load_ui('main_window'), self)
         self.progressBar.hide()
         self.statusBar().showMessage('Ready')
+        self.search_bar.setFocus()
         self.get_view_columns()
         self.triggers()
         self.set_view_columns()
         self.press()
-        self.history()
+        self.completer = QCompleter()
+        self.search_bar.setCompleter(self.completer)
 
     def check_empty_db(self):
         """
@@ -106,11 +108,8 @@ class Main(QMainWindow):
         history = History()
         # Add a new entry to history file
         history.add(add_new)
-        # Show last keywords
-        completer = QCompleter()
-        self.search_bar.setCompleter(completer)
         model = QStringListModel()
-        completer.setModel(model)
+        self.completer.setModel(model)
         model.setStringList(history.get())
 
     def press(self):
@@ -120,6 +119,7 @@ class Main(QMainWindow):
         """
         self.search_btn.clicked.connect(lambda: self.fetch(self.search_bar.text()))
         self.search_bar.returnPressed.connect(lambda: self.fetch(self.search_bar.text()))
+        self.search_bar.textChanged.connect(lambda: self.history())
 
     def fetch(self, term):
         """
