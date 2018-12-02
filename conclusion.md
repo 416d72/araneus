@@ -28,7 +28,7 @@
 - Embedding shortcuts in QT designer app templates instead of using event listener in the controller.
 - Figured out how to load several Qt windows thanks to this old answer [here](http://python.6.x6.nabble.com/QCoreApplication-exec-The-event-loop-is-already-running-tp1795366p1795378.html)
 - Learnt how to control the visibility of columns in Qtreeview thanks to [that answer](https://stackoverflow.com/a/26675732/7301680)
-- Running methods in background thanks to [this awesome answer](https://stackoverflow.com/a/47561712/7301680)
+- Running methods in background thanks to [this awesome answer](https://stackoverflow.com/a/33453124/7301680)
 # Other things that I'd like to learn deeper in the near future:
 - Formatting strings
 - Exception handling.

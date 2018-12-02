@@ -25,7 +25,17 @@ class Database(Connection):
         # command = 'cd %s ; ls -1R | grep ^d | wc' % self.target
         # process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         # total_dirs = float(process.communicate()[0].decode("utf-8").split()[0])
-        self.percent = 0
+
+    def get_total_directories(self):
+        """
+        Com'n the title is clear
+        :return: int
+        """
+        if 'python' in self.mechanism:
+            return sum(1 for d in os.walk(self.target))
+        elif 'fd' in self.mechanism:
+            # Code will come in the future إن شاء الله
+            pass
 
     def build(self):
         """
@@ -49,10 +59,6 @@ class Database(Connection):
             raise Exception
 
     def _walk(self):
-        count = 0
-        for d in os.walk(self.target):
-            count += 1
-        self.percent = 100.0 / float(count)
         con = sqlite3.connect(self.tmp_db)
         cursor = con.cursor()
         cursor.execute('PRAGMA synchronous = OFF')
@@ -113,7 +119,7 @@ class Database(Connection):
                                   mime=True)
                     )
                 )
-            yield self.percent
+            yield 1
         cursor.execute('END TRANSACTION')
         con.commit()
         con.close()
