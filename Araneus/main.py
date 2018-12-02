@@ -4,24 +4,47 @@ import time
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from PyQt5.Qt import QTreeWidgetItem, QCompleter, QStringListModel
+from PyQt5.QtCore import QThread, QObject, pyqtSlot, pyqtSignal, QStringListModel
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeWidgetItem, QCompleter
 from PyQt5.uic import loadUi
 
 db = Database()
 c = Configurations()
 
 
+class Worker(QObject):
+    started = pyqtSignal(int)
+    progress = pyqtSignal(int)
+    finished = pyqtSignal(int)
+    stop = pyqtSignal(int)
+
+    current_progress = 0
+
+    @pyqtSlot()
+    def build(self):
+        """
+        Loop through given method and extract data and passing it via signal
+        :return: None
+        """
+        self.started.emit(0)
+        for progress in db.build():
+            self.current_progress += 1
+            self.progress.emit(self.current_progress)
+        self.finished.emit(0)
+        self.stop.emit(0)
+
+
 class Main(QMainWindow):
     view_col_modified = c.get_option('VIEW_COLUMNS', 'modified', 'bool')
     view_col_accessed = c.get_option('VIEW_COLUMNS', 'accessed', 'bool')
     view_col_type = c.get_option('VIEW_COLUMNS', 'type', 'bool')
+    total_dirs = 0
 
     def __init__(self):
         super(Main, self).__init__()
-        self.thread()
+        self.worker = Worker()
+        self.thread = QThread()
         loadUi(load_ui('main_window'), self)
-        self.progressBar.hide()
         self.statusBar().showMessage('Ready')
         self.search_bar.setFocus()
         self.get_view_columns()
@@ -41,12 +64,11 @@ class Main(QMainWindow):
             self.search_bar.setEnabled(0)
             self.search_btn.setEnabled(0)
             self.statusBar().showMessage('No database found!')
-            self.build_db()
+            self.build_db_dialog()
 
     def triggers(self):
         self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
-        # self.actionBuild_All.triggered.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
         self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
         self.actionAbout.triggered.connect(about_dialog)
 
@@ -169,7 +191,7 @@ class Main(QMainWindow):
         """
         pass
 
-    def build_db(self):
+    def build_db_dialog(self):
         """
         Show the build_db dialog
         :return: None
@@ -192,25 +214,47 @@ class Main(QMainWindow):
 
     def build_all_action(self):
         """
-        Running 'Build' task
+        Running 'Build' task in a new thread
         :return: None
         """
+        self.worker.moveToThread(self.thread)
+        self.worker.progress.connect(self.animate)
+        self.worker.started.connect(self.before_build)
+        self.worker.finished.connect(self.after_building)
+        self.worker.stop.connect(self.thread.quit)
+        self.thread.started.connect(self.worker.build)
+        self.thread.start()
+
+    def before_build(self):
+        """
+        Things to do before building a new database
+        :return: None
+        """
+        self.total_dirs = db.get_total_directories()
         self.actionBuild_All.setDisabled(True)
-        self.progressBar.show()
-        cur = 0
-        for progress in db.build():
-            cur += progress
-            self.progressBar.setValue(cur)
-            self.statusBar().showMessage('Building')
-        self.progressBar.setValue(100)
+
+    def after_building(self):
+        """
+        Things to do after building is complete
+        :return: None
+        """
         self.search_bar.setDisabled(True)
         db.move_tmp_db()
         self.search_bar.setDisabled(False)
-        self.progressBar.hide()
         self.statusBar().showMessage('Ready')
         self.search_bar.setEnabled(1)
         self.search_btn.setEnabled(1)
         self.actionBuild_All.setDisabled(False)
+        self.search_bar.setFocus()
+
+    def animate(self, current):
+        """
+        Show SVG animation bar and update the status bar
+        :param current represents the current directory being scanned
+        :param total Total number of directories in the target path
+        :return: None
+        """
+        self.statusBar().showMessage('Building.. {} / {}'.format(current, self.total_dirs))
 
 
 def main():
