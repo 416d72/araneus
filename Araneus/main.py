@@ -176,7 +176,6 @@ class Main(QMainWindow):
         """
         from Araneus.build_db import BuildDB
         bdb = BuildDB()
-        # bdb.buttonBox.accepted.connect(lambda: ProcessRunnable(target=self.build_all_action).start())
         bdb.buttonBox.accepted.connect(lambda: self.build_all_action())
         global pref
         pref = bdb
@@ -198,9 +197,12 @@ class Main(QMainWindow):
         """
         self.actionBuild_All.setDisabled(True)
         self.progressBar.show()
+        cur = 0
         for progress in db.build():
-            self.progressBar.setValue(progress)
+            cur += progress
+            self.progressBar.setValue(cur)
             self.statusBar().showMessage('Building')
+        self.progressBar.setValue(100)
         self.search_bar.setDisabled(True)
         db.move_tmp_db()
         self.search_bar.setDisabled(False)

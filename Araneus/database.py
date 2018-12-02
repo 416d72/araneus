@@ -10,10 +10,10 @@ class Database(Connection):
     min_size = 0
     if config.get_option('DATABASE', 'min_size_true', 'bool'):
         min_size = config.get_option('DATABASE', 'min_size', 'int') * 1024
+    hidden = config.get_option('SEARCH', 'show_hidden_files', 'bool')
     mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
     target = os.path.abspath(
         os.path.expanduser('~') + '/Dev/')  # Currently only user's home folder will be indexed
-    counter = 0
 
     def __init__(self):
         """
@@ -21,9 +21,11 @@ class Database(Connection):
         update the progress bar in real time
         """
         super().__init__()
-        command = 'cd %s ; ls -1R | grep ^d | wc' % self.target
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        self.total_dirs = int(process.communicate()[0].decode("utf-8").split()[0])
+        # Linux way
+        # command = 'cd %s ; ls -1R | grep ^d | wc' % self.target
+        # process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        # total_dirs = float(process.communicate()[0].decode("utf-8").split()[0])
+        self.percent = 0
 
     def build(self):
         """
@@ -47,6 +49,10 @@ class Database(Connection):
             raise Exception
 
     def _walk(self):
+        count = 0
+        for d in os.walk(self.target):
+            count += 1
+        self.percent = 100.0 / float(count)
         con = sqlite3.connect(self.tmp_db)
         cursor = con.cursor()
         cursor.execute('PRAGMA synchronous = OFF')
@@ -63,20 +69,37 @@ class Database(Connection):
                        "`type` TEXT"
                        "); ")
         for directory in os.walk(self.target):
-            cursor.execute(
-                "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
-                (
-                    directory[0].split('/')[-1],
-                    0,
-                    directory[0] + '/',
-                    os.stat(directory[0] + '/').st_mtime,
-                    os.stat(directory[0] + '/').st_atime,
-                    'Directory',
+            name = str(directory[0].split('/')[-1])
+            if self.hidden:
+                cursor.execute(
+                    "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
+                    (
+                        name,
+                        0,
+                        directory[0] + '/',
+                        os.stat(directory[0] + '/').st_mtime,
+                        os.stat(directory[0] + '/').st_atime,
+                        'Directory',
+                    )
                 )
-            )
+            else:
+                if not name.startswith("."):
+                    cursor.execute(
+                        "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
+                        (
+                            name,
+                            0,
+                            directory[0] + '/',
+                            os.stat(directory[0] + '/').st_mtime,
+                            os.stat(directory[0] + '/').st_atime,
+                            'Directory',
+                        )
+                    )
             for file in directory[2]:
                 size = os.stat(directory[0] + '/' + file).st_size
                 if size < self.min_size:
+                    continue
+                if file.startswith('.') and not self.hidden:
                     continue
                 cursor.execute(
                     "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
@@ -90,9 +113,7 @@ class Database(Connection):
                                   mime=True)
                     )
                 )
-            self.counter += 1
-            percent = 100 * self.counter / self.total_dirs
-            yield percent
+            yield self.percent
         cursor.execute('END TRANSACTION')
         con.commit()
         con.close()
