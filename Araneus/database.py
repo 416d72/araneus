@@ -13,7 +13,7 @@ class Database(Connection):
     hidden = config.get_option('SEARCH', 'show_hidden_files', 'bool')
     mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
     target = os.path.abspath(
-        os.path.expanduser('~') + '/Dev/')  # Currently only user's home folder will be indexed
+        os.path.expanduser('~') + '/Dev/Python/')  # Currently only user's home folder will be indexed
 
     def __init__(self):
         """

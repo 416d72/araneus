@@ -3,9 +3,9 @@
     <file>logo.png</file>
   </qresource>
   <qresource prefix="animations">
-    <file>animations/15.svg</file>
     <file>animations/Spinner-1s-200px.gif</file>
-    <file>animations/Spinner-1s-200px.svg</file>
+    <file>animations/bar.svg</file>
+    <file>animations/icon.svg</file>
   </qresource>
   <qresource prefix="banner">
     <file>banner_360.png</file>

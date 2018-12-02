@@ -39,6 +39,15 @@ def load_ui(name):
     return str(os.path.abspath(os.getcwd()) + '/UI/' + name + '.ui')
 
 
+def load_animation(name: str):
+    """
+    Gets the full path to SVG animated files
+    :param name:
+    :return: str
+    """
+    return str(os.path.abspath(os.getcwd()) + '/UI/icons/animations/{}.svg'.format(name))
+
+
 def convert(size: int):
     """
     Convert size from Bytes to KB,MB,GB,TB.

@@ -1,17 +1,18 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
-import time
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
 from PyQt5.QtCore import QThread, QObject, pyqtSlot, pyqtSignal, QStringListModel
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeWidgetItem, QCompleter
+from PyQt5.QtSvg import QSvgWidget
 from PyQt5.uic import loadUi
 
 db = Database()
 c = Configurations()
 
 
+# noinspection PyArgumentList
 class Worker(QObject):
     started = pyqtSignal(int)
     progress = pyqtSignal(int)
@@ -32,6 +33,7 @@ class Worker(QObject):
             self.progress.emit(self.current_progress)
         self.finished.emit(0)
         self.stop.emit(0)
+        self.current_progress = 0
 
 
 class Main(QMainWindow):
@@ -39,7 +41,9 @@ class Main(QMainWindow):
     view_col_accessed = c.get_option('VIEW_COLUMNS', 'accessed', 'bool')
     view_col_type = c.get_option('VIEW_COLUMNS', 'type', 'bool')
     total_dirs = 0
+    svgWidget = None
 
+    # noinspection PyArgumentList
     def __init__(self):
         super(Main, self).__init__()
         self.worker = Worker()
@@ -218,7 +222,7 @@ class Main(QMainWindow):
         :return: None
         """
         self.worker.moveToThread(self.thread)
-        self.worker.progress.connect(self.animate)
+        self.worker.progress.connect(self.update_status_bar)
         self.worker.started.connect(self.before_build)
         self.worker.finished.connect(self.after_building)
         self.worker.stop.connect(self.thread.quit)
@@ -232,6 +236,12 @@ class Main(QMainWindow):
         """
         self.total_dirs = db.get_total_directories()
         self.actionBuild_All.setDisabled(True)
+        # SVG animation bar
+        self.svgWidget = QSvgWidget(load_animation('bar'))
+        self.svgWidget.setGeometry(0, 0, 1080, 3)
+        self.svgWidget.setStyleSheet("background-color:White;")
+        self.loading.addWidget(self.svgWidget)
+        self.svgWidget.show()
 
     def after_building(self):
         """
@@ -244,14 +254,12 @@ class Main(QMainWindow):
         self.statusBar().showMessage('Ready')
         self.search_bar.setEnabled(1)
         self.search_btn.setEnabled(1)
-        self.actionBuild_All.setDisabled(False)
-        self.search_bar.setFocus()
+        self.svgWidget.hide()
 
-    def animate(self, current):
+    def update_status_bar(self, current):
         """
-        Show SVG animation bar and update the status bar
+        Guess what !!
         :param current represents the current directory being scanned
-        :param total Total number of directories in the target path
         :return: None
         """
         self.statusBar().showMessage('Building.. {} / {}'.format(current, self.total_dirs))
