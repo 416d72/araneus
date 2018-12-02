@@ -32,6 +32,16 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="search_bar">
+      <property name="focusPolicy">
+       <enum>Qt::StrongFocus</enum>
+      </property>
+      <property name="placeholderText">
+       <string>Search</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0" colspan="2">
      <widget class="QTreeWidget" name="treeWidget">
       <property name="contextMenuPolicy">
@@ -90,15 +100,8 @@
       </column>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QLineEdit" name="search_bar">
-      <property name="focusPolicy">
-       <enum>Qt::StrongFocus</enum>
-      </property>
-      <property name="placeholderText">
-       <string>Search</string>
-      </property>
-     </widget>
+    <item row="2" column="0" colspan="2">
+     <layout class="QGridLayout" name="loading"/>
     </item>
    </layout>
   </widget>
@@ -163,7 +166,8 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
    <property name="icon">
-    <iconset theme="exit"/>
+    <iconset theme="exit">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Quit</string>
@@ -174,7 +178,8 @@
   </action>
   <action name="actionPreferences">
    <property name="icon">
-    <iconset theme="document-properties"/>
+    <iconset theme="document-properties">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Preferences</string>
@@ -185,7 +190,8 @@
   </action>
   <action name="actionBuild_All">
    <property name="icon">
-    <iconset theme="system-run"/>
+    <iconset theme="system-run">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Build All</string>
@@ -196,7 +202,8 @@
   </action>
   <action name="actionAbout">
    <property name="icon">
-    <iconset theme="help"/>
+    <iconset theme="help">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>About</string>
@@ -237,7 +244,8 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset theme="document"/>
+    <iconset theme="document">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Properties</string>
