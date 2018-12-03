@@ -196,9 +196,8 @@ class Main(QMainWindow):
         :param path
         :return: None
         """
-        try:
-            subprocess.call('xdg-open \'{}\''.format(path))
-        except Exception as err:
+        command = subprocess.call(["xdg-open", path])
+        if command == 4:  # Location doesn't exist
             self.build_db_dialog('update')
 
     def context_menu(self, event):
