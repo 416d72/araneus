@@ -1,6 +1,7 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 import os
+import subprocess
 import sys
 
 pid_file = '/tmp/Araneus.pid'

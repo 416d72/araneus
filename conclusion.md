@@ -17,6 +17,7 @@
     - Getting user's home directory with `os.path.expanduser(~)`
     - Checking what OS is currently running with `sys.platform`.
     - Allowing only one instance by creating a `.pid` file and handling it.
+    - Opening a file in the default file manager in linux using command `xdg-open {location}`
 - Tricks:
     - `lambda`, `with`, `if __name__ == "__main__"`, `yield`
     - Opening a url in the default browser with `import webbrowser` and `webbrowser.open(url)`.

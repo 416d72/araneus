@@ -68,7 +68,7 @@ class Main(QMainWindow):
             self.search_bar.setEnabled(0)
             self.search_btn.setEnabled(0)
             self.statusBar().showMessage('No database found!')
-            self.build_db_dialog()
+            self.build_db_dialog('new')
 
     def triggers(self):
         self.actionQuit.triggered.connect(lambda: sys.exit())
@@ -186,6 +186,20 @@ class Main(QMainWindow):
                     self.treeWidget.addTopLevelItem(item)
             for i in range(6):
                 self.treeWidget.resizeColumnToContents(i)
+            self.treeWidget.itemDoubleClicked.connect(
+                lambda: self.open_in_file_manager(self.treeWidget.currentItem().text(2)))
+            self.treeWidget.customContextMenuRequested.connect(lambda: print('Show context menu'))
+
+    def open_in_file_manager(self, path: str):
+        """
+        Opens the default file manager in a specific path
+        :param path
+        :return: None
+        """
+        try:
+            subprocess.call('xdg-open \'{}\''.format(path))
+        except Exception as err:
+            self.build_db_dialog('update')
 
     def context_menu(self, event):
         """
@@ -195,13 +209,20 @@ class Main(QMainWindow):
         """
         pass
 
-    def build_db_dialog(self):
+    def build_db_dialog(self, msg: str):
         """
+        TODO: convert this to be a global warning message which contents changes based on the event output
         Show the build_db dialog
+        :param msg contains a custom message to be shown instead of the default
         :return: None
         """
         from Araneus.build_db import BuildDB
         bdb = BuildDB()
+        if msg == 'new':
+            bdb.diag_empty_db.show()
+        else:
+            bdb.setWindowTitle('Location is not accessible!')
+            bdb.diag_out_of_date_db.show()
         bdb.buttonBox.accepted.connect(lambda: self.build_all_action())
         global pref
         pref = bdb
