@@ -30,6 +30,8 @@
 - Figured out how to load several Qt windows thanks to this old answer [here](http://python.6.x6.nabble.com/QCoreApplication-exec-The-event-loop-is-already-running-tp1795366p1795378.html)
 - Learnt how to control the visibility of columns in Qtreeview thanks to [that answer](https://stackoverflow.com/a/26675732/7301680)
 - Running methods in background thanks to [this awesome answer](https://stackoverflow.com/a/33453124/7301680)
+### Linux
+- `xdg-open` returns `0` by default and `4` if location doesn't exist.
 # Other things that I'd like to learn deeper in the near future:
 - Formatting strings
 - Exception handling.

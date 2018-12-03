@@ -74,7 +74,7 @@ class Main(QMainWindow):
         self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
         self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
-        self.actionAbout.triggered.connect(about_dialog)
+        self.actionAbout.triggered.connect(self.about_dialog)
 
     def get_view_columns(self):
         """
@@ -283,6 +283,15 @@ class Main(QMainWindow):
         :return: None
         """
         self.statusBar().showMessage('Building.. {} / {}'.format(current, self.total_dirs))
+
+    @staticmethod
+    def about_dialog():
+        """
+        Showing the about dialog | Influenced by the about dialog from 'Zeal' app
+        :return: None
+        """
+        from Araneus.about import new_window
+        new_window()
 
 
 def main():

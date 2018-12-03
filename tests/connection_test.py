@@ -8,9 +8,6 @@ class TestConnection(unittest.TestCase):
     def test_create(self):
         self.assertTrue(Connection().create())
 
-    def test_insert(self):
-        self.assertTrue(Connection().insert("test", "test", "test", "test", "test", "test"))
-
     def test_get(self):
         self.assertIsInstance(Connection().get("test"), list)
 
