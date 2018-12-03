@@ -186,17 +186,21 @@ class Main(QMainWindow):
                     self.treeWidget.addTopLevelItem(item)
             for i in range(6):
                 self.treeWidget.resizeColumnToContents(i)
-            self.treeWidget.itemDoubleClicked.connect(
-                lambda: self.open_in_file_manager(self.treeWidget.currentItem().text(2)))
+            self.treeWidget.itemDoubleClicked.connect(self.view_item)
             self.treeWidget.customContextMenuRequested.connect(lambda: print('Show context menu'))
 
-    def open_in_file_manager(self, path: str):
+    def view_item(self):
         """
-        Opens the default file manager in a specific path
-        :param path
+        View file or directory in the default app
         :return: None
         """
-        command = subprocess.call(["xdg-open", path])
+        name = self.treeWidget.currentItem().text(0)
+        path = self.treeWidget.currentItem().text(2)
+        type = self.treeWidget.currentItem().text(5)
+        if type == 'Directory':
+            command = subprocess.call(["xdg-open", path])
+        else:
+            command = subprocess.call(["xdg-open", path + name])
         if command == 4:  # Location doesn't exist
             self.build_db_dialog('update')
 
