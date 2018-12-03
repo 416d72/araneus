@@ -1,6 +1,5 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
-import subprocess
 from magic import from_file
 from Araneus.connection import *
 
@@ -13,7 +12,7 @@ class Database(Connection):
     hidden = config.get_option('SEARCH', 'show_hidden_files', 'bool')
     mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
     target = os.path.abspath(
-        os.path.expanduser('~') + '/Dev/Python/')  # Currently only user's home folder will be indexed
+        os.path.expanduser('~') + '/3/')  # Currently only user's home folder will be indexed
 
     def __init__(self):
         """
@@ -34,7 +33,7 @@ class Database(Connection):
         if 'python' in self.mechanism:
             return sum(1 for d in os.walk(self.target))
         elif 'fd' in self.mechanism:
-            # Code will come in the future إن شاء الله
+            # algorithm will come in the future إن شاء الله
             pass
 
     def build(self):
@@ -76,36 +75,20 @@ class Database(Connection):
                        "); ")
         for directory in os.walk(self.target):
             name = str(directory[0].split('/')[-1])
-            if self.hidden:
-                cursor.execute(
-                    "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
-                    (
-                        name,
-                        0,
-                        directory[0] + '/',
-                        os.stat(directory[0] + '/').st_mtime,
-                        os.stat(directory[0] + '/').st_atime,
-                        'Directory',
-                    )
+            cursor.execute(
+                "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
+                (
+                    name,
+                    0,
+                    directory[0] + '/',
+                    os.stat(directory[0] + '/').st_mtime,
+                    os.stat(directory[0] + '/').st_atime,
+                    'Directory',
                 )
-            else:
-                if not name.startswith("."):
-                    cursor.execute(
-                        "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
-                        (
-                            name,
-                            0,
-                            directory[0] + '/',
-                            os.stat(directory[0] + '/').st_mtime,
-                            os.stat(directory[0] + '/').st_atime,
-                            'Directory',
-                        )
-                    )
+            )
             for file in directory[2]:
                 size = os.stat(directory[0] + '/' + file).st_size
                 if size < self.min_size:
-                    continue
-                if file.startswith('.') and not self.hidden:
                     continue
                 cursor.execute(
                     "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",

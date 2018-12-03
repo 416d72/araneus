@@ -14,6 +14,8 @@ class BuildDB(QDialog):
     def __init__(self):
         super(BuildDB, self).__init__()
         loadUi(load_ui('empty_db'), self)
+        self.diag_empty_db.hide()
+        self.diag_out_of_date_db.hide()
         self.show()
 
 
