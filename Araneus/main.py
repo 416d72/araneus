@@ -3,8 +3,9 @@
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
-from PyQt5.QtCore import QThread, QObject, pyqtSlot, pyqtSignal, QStringListModel
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeWidgetItem, QCompleter
+from PyQt5.QtCore import QThread, QObject, pyqtSlot, pyqtSignal, QStringListModel, QPoint
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeWidgetItem, QCompleter, QMenu, QAction
+from PyQt5.QtGui import QCursor
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.uic import loadUi
 
@@ -187,22 +188,55 @@ class Main(QMainWindow):
             for i in range(6):
                 self.treeWidget.resizeColumnToContents(i)
             self.treeWidget.itemDoubleClicked.connect(self.view_item)
-            self.treeWidget.customContextMenuRequested.connect(lambda: print('Show context menu'))
+            self.treeWidget.customContextMenuRequested.connect(self.view_context_menu)
 
-    def view_item(self):
+    def view_item(self, mode: str = 'name'):
         """
         View file or directory in the default app
         :return: None
         """
         name = self.treeWidget.currentItem().text(0)
         path = self.treeWidget.currentItem().text(2)
-        type = self.treeWidget.currentItem().text(5)
-        if type == 'Directory':
+        item_type = self.treeWidget.currentItem().text(5)
+        if item_type == 'Directory' or mode == 'location':
+            """
+            Open directory or select 'open containing directory' from context menu
+            """
             command = subprocess.call(["xdg-open", path])
         else:
             command = subprocess.call(["xdg-open", path + name])
         if command == 4:  # Location doesn't exist
             self.build_db_dialog('update')
+
+    def view_context_menu(self):
+        """
+        Yes as you expected, This shows a context menu upon right clicking on an item.
+        TODO: add icons
+        :return: None
+        """
+        item_type = self.treeWidget.currentItem().text(5)
+        mouse = QCursor.pos()  # Get current mouse position
+        menu = QMenu(self)
+        menu.setFocus(True)
+        # Adding custom actions
+        action_open = menu.addAction('open')
+        action_open_dir = None
+        if item_type is not "Directory":
+            # If the current selected item is a directory, there's no need to add an option to Open containing directory
+            action_open_dir = menu.addAction('Open containing directory')
+        menu.addSeparator()
+        action_cut = menu.addAction('Cut')
+        action_copy = menu.addAction('Copy')
+        action_paste = menu.addAction('Paste')
+        menu.addSeparator()
+        action_delete = menu.addAction('Delete from disk')
+        # Showing the menu right at the mouse position
+        action = menu.exec_(mouse)
+        # Controlling actions:
+        if action_open == action:
+            self.view_item()
+        elif action == action_open_dir:
+            self.view_item('location')
 
     def context_menu(self, event):
         """
