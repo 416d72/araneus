@@ -4,7 +4,7 @@ import os
 import subprocess
 import sys
 
-pid_file = '/tmp/Araneus.pid'
+pid_file = '/tmp/Araneus.lock'
 config_dir = os.path.expanduser('~') + '/.config/Araneus/'
 
 
@@ -19,16 +19,18 @@ def check_os():
 
 def is_running():
     """
-        Allows for only one instance of the app by creating a .pid file in /tmp directory and checking if it exists
+        Allows for only one instance of the app by creating a .lock file in /tmp directory and checking if it exists
         :return: int or False
         """
     check_os()
     try:
         with open(pid_file, 'r') as f:
             pid = int(next(f))
-        return os.kill(pid, 0)
-    except Exception:
-        return Exception
+        if pid != os.getpid():
+            os.kill(pid, 0)
+        return True
+    except IOError as err:
+        return IOError
 
 
 def load_ui(name):
@@ -68,17 +70,8 @@ def convert(size: int):
     return "%.2f " % round(size, 2) + d[n]
 
 
-def about_dialog():
-    """
-    Showing the about dialog | Influenced by the about dialog from 'Zeal' app
-    :return: None
-    """
-    from Araneus.about import new_window
-    new_window()
-
-
 if __name__ == "__main__":
+    with open(pid_file, 'w') as f:
+        f.write(str(os.getpid()))
     if is_running():
         sys.exit("Only one instance allowed")
-    with open(pid_file, 'w') as f:
-        f.write(f'{os.getpid()}')
