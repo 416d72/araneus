@@ -328,19 +328,9 @@ class Main(QMainWindow):
         self.worker.progress.connect(self.update_status_bar)
         self.worker.started.connect(self.before_build)
         self.worker.finished.connect(self.after_building)
-        self.worker.stop.connect(self.restart_thread)
+        self.worker.stop.connect(self.thread.quit)
         self.thread.started.connect(self.worker.build)
         self.thread.start()
-
-    def restart_thread(self):
-        """
-        Restart the thread after stopped
-        :return: None
-        """
-        self.thread.deleteLater()
-        self.thread.quit()
-        self.worker = Worker()
-        self.thread = QThread()
 
     def before_build(self):
         """
