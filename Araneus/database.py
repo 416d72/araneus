@@ -12,7 +12,7 @@ class Database(Connection):
     hidden = config.get_option('SEARCH', 'show_hidden_files', 'bool')
     mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
     target = os.path.abspath(
-        os.path.expanduser('~') + '/3/')  # Currently only user's home folder will be indexed
+        os.path.expanduser('~') + '/Documents/')  # Currently only user's home folder will be indexed
 
     def __init__(self):
         """
@@ -31,7 +31,11 @@ class Database(Connection):
         :return: int
         """
         if 'python' in self.mechanism:
-            return sum(1 for d in os.walk(self.target))
+            # return sum(1 for d in os.walk(self.target))
+            command = 'cd %s ; ls -1R | grep ^d | wc' % self.target
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+            return int(process.communicate()[0].decode("utf-8").split()[0])
+
         elif 'fd' in self.mechanism:
             # algorithm will come in the future إن شاء الله
             pass
@@ -87,21 +91,22 @@ class Database(Connection):
                 )
             )
             for file in directory[2]:
-                size = os.stat(directory[0] + '/' + file).st_size
-                if size < self.min_size:
-                    continue
-                cursor.execute(
-                    "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
-                    (
-                        file,
-                        size,
-                        directory[0] + '/',
-                        os.stat(directory[0] + '/' + file).st_mtime,
-                        os.stat(directory[0] + '/' + file).st_atime,
-                        from_file(directory[0] + '/' + file,
-                                  mime=True)
+                if os.path.isfile(directory[0] + '/' + file):
+                    size = os.stat(directory[0] + '/' + file).st_size
+                    if size < self.min_size:
+                        continue
+                    cursor.execute(
+                        "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
+                        (
+                            file,
+                            size,
+                            directory[0] + '/',
+                            os.stat(directory[0] + '/' + file).st_mtime,
+                            os.stat(directory[0] + '/' + file).st_atime,
+                            from_file(directory[0] + '/' + file,
+                                      mime=True)
+                        )
                     )
-                )
             yield 1
         cursor.execute('END TRANSACTION')
         con.commit()
