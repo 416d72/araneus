@@ -45,12 +45,12 @@ class Main(QMainWindow):
     total_dirs = 0
     svgWidget = None
     operation_type = ''
+    worker = Worker()
+    thread = QThread()
 
     # noinspection PyArgumentList
     def __init__(self):
         super(Main, self).__init__()
-        self.worker = Worker()
-        self.thread = QThread()
         loadUi(load_ui('main_window'), self)
         self.statusBar().showMessage('Ready')
         self.search_bar.setFocus()
@@ -328,9 +328,19 @@ class Main(QMainWindow):
         self.worker.progress.connect(self.update_status_bar)
         self.worker.started.connect(self.before_build)
         self.worker.finished.connect(self.after_building)
-        self.worker.stop.connect(self.thread.quit)
+        self.worker.stop.connect(self.restart_thread)
         self.thread.started.connect(self.worker.build)
         self.thread.start()
+
+    def restart_thread(self):
+        """
+        Restart the thread after stopped
+        :return: None
+        """
+        self.thread.deleteLater()
+        self.thread.quit()
+        self.worker = Worker()
+        self.thread = QThread()
 
     def before_build(self):
         """
