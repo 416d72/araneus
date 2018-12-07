@@ -1,10 +1,11 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
+import pyperclip
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
-from PyQt5.QtCore import QThread, QObject, pyqtSlot, pyqtSignal, QStringListModel, QPoint
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeWidgetItem, QCompleter, QMenu, QAction
+from PyQt5.QtCore import QThread, QObject, pyqtSlot, pyqtSignal, QStringListModel
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTreeWidgetItem, QCompleter, QMenu
 from PyQt5.QtGui import QCursor
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.uic import loadUi
@@ -43,6 +44,7 @@ class Main(QMainWindow):
     view_col_type = c.get_option('VIEW_COLUMNS', 'type', 'bool')
     total_dirs = 0
     svgWidget = None
+    operation_type = ''
 
     # noinspection PyArgumentList
     def __init__(self):
@@ -72,10 +74,19 @@ class Main(QMainWindow):
             self.build_db_dialog('new')
 
     def triggers(self):
+        """
+        Shortcuts
+        :return: None
+        """
         self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
         self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
         self.actionAbout.triggered.connect(self.about_dialog)
+        # File operations
+        # item_path = self.treeWidget.currentItem().text(2)
+        # self.actionCut.triggered.connect(lambda: self.item_operation(item_path, 'mv'))
+        # self.actionCopy.triggered.connect(lambda: self.item_operation(item_path, 'cp'))
+        # self.actionPaste.triggered.connect(lambda: self.item_paste(item_path))
 
     def get_view_columns(self):
         """
@@ -215,36 +226,70 @@ class Main(QMainWindow):
         :return: None
         """
         item_type = self.treeWidget.currentItem().text(5)
+        # item_path = self.treeWidget.currentItem().text(2)
+        # item_name = self.treeWidget.currentItem().text(0)
+        # noinspection PyArgumentList
         mouse = QCursor.pos()  # Get current mouse position
-        menu = QMenu(self)
-        menu.setFocus(True)
-        # Adding custom actions
+        menu = QMenu()
+        menu.setFocus(False)
+        # Adding Menu items
         action_open = menu.addAction('open')
         action_open_dir = None
-        if item_type is not "Directory":
+        if item_type != "Directory":
             # If the current selected item is a directory, there's no need to add an option to Open containing directory
             action_open_dir = menu.addAction('Open containing directory')
-        menu.addSeparator()
-        action_cut = menu.addAction('Cut')
-        action_copy = menu.addAction('Copy')
-        action_paste = menu.addAction('Paste')
-        menu.addSeparator()
-        action_delete = menu.addAction('Delete from disk')
+        # menu.addSeparator()
+        # action_cut = menu.addAction('Cut')
+        # action_copy = menu.addAction('Copy')
+        # action_paste = menu.addAction('Paste')
+        # menu.addSeparator()
+        # action_delete = menu.addAction('Delete from disk')
         # Showing the menu right at the mouse position
         action = menu.exec_(mouse)
         # Controlling actions:
         if action_open == action:
             self.view_item()
-        elif action == action_open_dir:
+        elif item_type != 'Directory' and action == action_open_dir:
             self.view_item('location')
+        # elif action == action_cut:
+        #     self.item_operation(item_path + item_name, 'mv')
+        # elif action == action_copy:
+        #     self.item_operation(item_path + item_name, 'cp')
+        # elif action == action_paste:
+        #     self.item_paste(item_path)
+        # elif action == action_delete:
+        #     pass
 
-    def context_menu(self, event):
+    def item_operation(self, path, operation_type):
         """
-        Shows context menu when right clicking a result item
-        :param event:
-        :return:
+        Handling clipboard
+        :param path original path
+        :param operation_type Either copy or move
+        :return: None
         """
-        pass
+        try:
+            self.operation_type = operation_type
+            pyperclip.copy("file:/" + path)
+        except Exception as err:
+            print('There\'s a problem with the clipboard: {}'.format(err))
+
+    def item_paste(self, path):
+        """
+        Paste one or more files in the clipboard into the specific location
+        :param path refers to destination
+        :return: None
+        """
+        try:
+            file = pyperclip.paste()
+            destination = self.treeWidget.currentItem().text(0)
+            if self.operation_type is 'cp':
+                print(file)
+                print(destination)
+                copy2(file, destination)
+            else:  # Move
+                move(file, destination)
+        except Exception as err:
+            print('A problem happened while pasting one or more items: {}'.format(err))
 
     def build_db_dialog(self, msg: str):
         """
