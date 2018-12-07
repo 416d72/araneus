@@ -3,6 +3,7 @@
 import os
 import subprocess
 import sys
+from shutil import copy2, move
 
 pid_file = '/tmp/Araneus.lock'
 config_dir = os.path.expanduser('~') + '/.config/Araneus/'
