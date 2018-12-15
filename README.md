@@ -1,7 +1,8 @@
 [![Build Status](https://travis-ci.org/akkk33/araneus.svg?branch=master)](https://travis-ci.org/akkk33/araneus)
 [![Coverage Status](https://coveralls.io/repos/github/akkk33/araneus/badge.svg?branch=master)](https://coveralls.io/github/akkk33/araneus?branch=master)
 ![Logo](Araneus/UI/icons/banner.png)
-# Application is under development.
+# Warning!
+There's no current plan for future development as file indexing in linux generally differ among available distros and Python is not the most appropriate tool to achieve that purpose. 
 # Dependencies:
 - Linux
 - Python3
