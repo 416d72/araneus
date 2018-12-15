@@ -12,7 +12,7 @@ class Database(Connection):
     hidden = config.get_option('SEARCH', 'show_hidden_files', 'bool')
     mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
     target = os.path.abspath(
-        os.path.expanduser('~') + '/Documents/')  # Currently only user's home folder will be indexed
+        os.path.expanduser('~') + '/Dev/')  # Currently only user's home folder will be indexed
 
     def __init__(self):
         """
@@ -31,11 +31,11 @@ class Database(Connection):
         :return: int
         """
         if 'python' in self.mechanism:
-            # return sum(1 for d in os.walk(self.target))
-            command = 'cd %s ; ls -1R | grep ^d | wc' % self.target
+            return sum(1 for d in os.walk(self.target))
+        elif 'find' in self.mechanism:
+            command = 'cd {} ; ls -1R | grep ^d | wc'.format(self.target)
             process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
             return int(process.communicate()[0].decode("utf-8").split()[0])
-
         elif 'fd' in self.mechanism:
             # algorithm will come in the future إن شاء الله
             pass
@@ -111,6 +111,13 @@ class Database(Connection):
         cursor.execute('END TRANSACTION')
         con.commit()
         con.close()
+
+    def _find(self):
+        """
+
+        :return:
+        """
+        pass
 
     def move_tmp_db(self):
         try:
