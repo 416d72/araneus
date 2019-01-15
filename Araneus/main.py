@@ -13,30 +13,6 @@ db = Database()
 c = Configurations()
 
 
-# noinspection PyArgumentList
-class Worker(QObject):
-    started = pyqtSignal(int)
-    progress = pyqtSignal(int)
-    finished = pyqtSignal(int)
-    stop = pyqtSignal(int)
-
-    current_progress = 0
-
-    @pyqtSlot()
-    def build(self):
-        """
-        Loop through given method and extract data and passing it via signal
-        :return: None
-        """
-        self.started.emit(0)
-        for progress in db.build():
-            self.current_progress += 1
-            self.progress.emit(self.current_progress)
-        self.finished.emit(0)
-        self.stop.emit(0)
-        self.current_progress = 0
-
-
 class Main(QMainWindow):
     view_col_modified = c.get_option('VIEW_COLUMNS', 'modified', 'bool')
     view_col_accessed = c.get_option('VIEW_COLUMNS', 'accessed', 'bool')
@@ -44,8 +20,6 @@ class Main(QMainWindow):
     total_dirs = 0
     svgWidget = None
     operation_type = ''
-    worker = Worker()
-    thread = QThread()
 
     # noinspection PyArgumentList
     def __init__(self):
@@ -79,7 +53,7 @@ class Main(QMainWindow):
         """
         self.actionQuit.triggered.connect(lambda: sys.exit())
         self.actionPreferences.triggered.connect(self.preferences_dialog)
-        self.actionBuild_All.triggered.connect(lambda: self.build_all_action())
+        self.actionBuild_All.triggered.connect(self.build_all_action)
         self.actionAbout.triggered.connect(self.about_dialog)
         # File operations
         # item_path = self.treeWidget.currentItem().text(2)
@@ -323,13 +297,7 @@ class Main(QMainWindow):
         Running 'Build' task in a new thread
         :return: None
         """
-        self.worker.moveToThread(self.thread)
-        self.worker.progress.connect(self.update_status_bar)
-        self.worker.started.connect(self.before_build)
-        self.worker.finished.connect(self.after_building)
-        self.worker.stop.connect(self.thread.quit)
-        self.thread.started.connect(self.worker.build)
-        self.thread.start()
+        db.build()
 
     def before_build(self):
         """

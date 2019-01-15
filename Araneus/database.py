@@ -47,9 +47,9 @@ class Database(Connection):
     def mlocate(self):
         try:
             subprocess.call(['gksu', 'updatedb'])
-            subprocess.call(['gksu', f'strings {self.mlocate_db}'])
-        except OSError:
-            print(OSError.strerror)
+            subprocess.call(['gksu', 'strings', f'{self.mlocate_db}'])
+        except OSError as e:
+            print(e)
 
     def move_tmp_db(self):
         try:
