@@ -53,6 +53,8 @@ class Configurations:
         try:
             self.create_config_dir()
             copy2(self.std_conf_file_path, self.conf_file_path)
+            with open(config_dir + 'mlocate.txt', 'a'):
+                pass
             return True
         except ValueError:
             return ValueError

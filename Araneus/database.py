@@ -30,15 +30,7 @@ class Database(Connection):
         Com'n the title is clear
         :return: int
         """
-        if 'python' in self.mechanism:
-            return sum(1 for d in os.walk(self.target))
-        elif 'find' in self.mechanism:
-            command = 'cd {} ; ls -1R | grep ^d | wc'.format(self.target)
-            process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-            return int(process.communicate()[0].decode("utf-8").split()[0])
-        elif 'fd' in self.mechanism:
-            # algorithm will come in the future إن شاء الله
-            pass
+        pass
 
     def build(self):
         """
@@ -46,78 +38,18 @@ class Database(Connection):
         :return: mix
         """
         try:
+            self.mlocate()
             super().create_tmp()
-            if 'python' in self.mechanism:
-                return self._walk()
-            elif 'find' in self.mechanism:
-                # TODO: implement indexing using GNU find
-                pass
-            elif 'locate' in self.mechanism:
-                # TODO: implement indexing using GNU locate
-                pass
-            elif 'fd' in self.mechanism:
-                # TODO: implement indexing using the awesome fd package
-                pass
+            self.move_tmp_db()
         except:
             raise Exception
 
-    def _walk(self):
-        con = sqlite3.connect(self.tmp_db)
-        cursor = con.cursor()
-        cursor.execute('PRAGMA synchronous = OFF')
-        cursor.execute('PRAGMA journal_mode = MEMORY')
-        cursor.execute('BEGIN TRANSACTION')
-        cursor.execute("CREATE TABLE IF NOT EXISTS data "
-                       "("
-                       "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
-                       "`name` TEXT,"
-                       "`size` TEXT,"
-                       "`location` TEXT,"
-                       "`modified` TEXT,"
-                       "`accessed` TEXT,"
-                       "`type` TEXT"
-                       "); ")
-        for directory in os.walk(self.target):
-            name = str(directory[0].split('/')[-1])
-            cursor.execute(
-                "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
-                (
-                    name,
-                    0,
-                    directory[0] + '/',
-                    os.stat(directory[0] + '/').st_mtime,
-                    os.stat(directory[0] + '/').st_atime,
-                    'Directory',
-                )
-            )
-            for file in directory[2]:
-                if os.path.isfile(directory[0] + '/' + file):
-                    size = os.stat(directory[0] + '/' + file).st_size
-                    if size < self.min_size:
-                        continue
-                    cursor.execute(
-                        "INSERT INTO `data` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES (?,?,?,?,?,?);",
-                        (
-                            file,
-                            size,
-                            directory[0] + '/',
-                            os.stat(directory[0] + '/' + file).st_mtime,
-                            os.stat(directory[0] + '/' + file).st_atime,
-                            from_file(directory[0] + '/' + file,
-                                      mime=True)
-                        )
-                    )
-            yield 1
-        cursor.execute('END TRANSACTION')
-        con.commit()
-        con.close()
-
-    def _find(self):
-        """
-
-        :return:
-        """
-        pass
+    def mlocate(self):
+        try:
+            subprocess.call(['gksu', 'updatedb'])
+            subprocess.call(['gksu', f'strings {self.mlocate_db}'])
+        except OSError:
+            print(OSError.strerror)
 
     def move_tmp_db(self):
         try:

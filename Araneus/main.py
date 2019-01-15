@@ -1,6 +1,5 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
-import pyperclip
 from datetime import datetime
 from Araneus.history import *
 from Araneus.database import *
@@ -269,7 +268,7 @@ class Main(QMainWindow):
         """
         try:
             self.operation_type = operation_type
-            pyperclip.copy("file:/" + path)
+            # pyperclip.copy("file:/" + path)
         except Exception as err:
             print('There\'s a problem with the clipboard: {}'.format(err))
 
@@ -280,7 +279,7 @@ class Main(QMainWindow):
         :return: None
         """
         try:
-            file = pyperclip.paste()
+            # file = pyperclip.paste()
             destination = self.treeWidget.currentItem().text(0)
             if self.operation_type is 'cp':
                 print(file)
