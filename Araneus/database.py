@@ -31,7 +31,9 @@ class Database(Connection):
         Com'n the title is clear
         :return: int
         """
-        pass
+        with open(self.mlocate_txt, 'r') as file:
+            elements = file.readlines()
+        return len(elements)
 
     def build(self):
         """
