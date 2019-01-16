@@ -2,6 +2,7 @@
 # LICENSE: see Araneus/LICENSE
 
 import sqlite3
+
 from Araneus.configurations import *
 
 
@@ -29,8 +30,8 @@ class Connection:
                            "("
                            "`id` INTEGER PRIMARY KEY AUTOINCREMENT,"
                            "`name` TEXT,"
-                           "`size` TEXT,"
                            "`location` TEXT,"
+                           "`size` TEXT,"
                            "`modified` TEXT,"
                            "`accessed` TEXT"
                            "); ")
@@ -38,13 +39,14 @@ class Connection:
             cursor.execute("CREATE TABLE IF NOT EXISTS `files` "
                            "("
                            "`id` INTEGER PRIMARY KEY AUTOINCREMENT,"
+                           "`parent` INTEGER,"
                            "`name` TEXT,"
+                           "`location` TEXT,"
                            "`size` TEXT,"
-                           "`location` INT,"
                            "`modified` TEXT,"
                            "`accessed` TEXT,"
                            "`type` TEXT,"
-                           "FOREIGN KEY(`location`) REFERENCES `directories`(`id`)"
+                           "FOREIGN KEY(`parent`) REFERENCES `directories`(`id`)"
                            "); ")
             con.commit()
             con.close()
@@ -61,7 +63,7 @@ class Connection:
         try:
             con = sqlite3.connect(self.std_db)
             cursor = con.cursor()
-            command = "SELECT * FROM `data` WHERE `name` LIKE ?"
+            command = "SELECT * FROM `directories` WHERE `location` LIKE ?"
             cursor.execute(command, ("%" + search_term + "%",))
             return cursor.fetchall()
         except sqlite3.Error as e:
