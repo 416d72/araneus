@@ -1,5 +1,6 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
+import sqlite3
 from magic import from_file
 from Araneus.connection import *
 
@@ -38,23 +39,52 @@ class Database(Connection):
         :return: mix
         """
         try:
-            self.mlocate()
+            os.system(f'pkexec bash -c "updatedb && strings {self.mlocate_db} > {self.mlocate_txt}"')
             super().create_tmp()
             self.move_tmp_db()
-        except:
-            raise Exception
-
-    def mlocate(self):
-        try:
-            subprocess.call(['gksu', 'updatedb'])
-            subprocess.call(['gksu', 'strings', f'{self.mlocate_db}'])
+            self.empty_txt()
         except OSError as e:
-            print(e)
+            return e
+
+    def fill_db(self):
+        try:
+            with open(self.mlocate_txt, 'r') as file:
+                elements = file.read().split()
+            con = sqlite3.connect(self.tmp_db)
+            cursor = con.cursor()
+            cursor.execute("PRAGMA synchronous = OFF")
+            cursor.execute("BEGIN TRANSACTION")
+            last_id = 0
+            for item in elements:
+                if item.startswith('/'):  # It's a directory
+                    cursor.execute("INSERT INTO `directories` (`name`,`size`,`location`,`modified`,`accessed`) VALUES"
+                                   "(?,?,?,?,?)", [item.split('/')[-1], None, item, None, None])
+                    last_id = cursor.lastrowid
+                else:  # It's a file
+                    if last_id != 0:  # At least one directory has been already inserted
+                        cursor.execute(
+                            "INSERT INTO `files` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES"
+                            "(?,?,?,?,?,?)", [item, None, last_id, None, None, None])
+            cursor.execute("END TRANSACTION")
+            con.commit()
+            con.close()
+
+        except sqlite3.Error as e:
+            return e
+        except IOError as e:
+            return e
 
     def move_tmp_db(self):
         try:
             copy2(self.tmp_db, self.std_db)
             os.remove(self.tmp_db)
             return True
-        except Exception:
-            return Exception
+        except IOError as e:
+            return e
+
+    def empty_txt(self):
+        try:
+            with open(self.mlocate_txt, 'w') as file:
+                file.write('')
+        except IOError as e:
+            return e

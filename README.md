@@ -1,19 +1,16 @@
 [![Build Status](https://travis-ci.org/akkk33/araneus.svg?branch=master)](https://travis-ci.org/akkk33/araneus)
 [![Coverage Status](https://coveralls.io/repos/github/akkk33/araneus/badge.svg?branch=master)](https://coveralls.io/github/akkk33/araneus?branch=master)
 ![Logo](Araneus/UI/icons/banner.png)
-# Warning!
-There's no current plan for future development as file indexing in linux generally differ among available distros and Python is not the most appropriate tool to achieve that purpose. 
 # Dependencies:
 - Linux
 - Python3
-- PyQt5
-- python-magic
-- ~~pyperclip~~
+- pkexec
 - ~~fd **[optional]**~~
 # Usage:
 > Instructions and examples will be available in the first stable release.
 # Installation:
-> Instructions will be available in the first stable release.
+- `source env/bin/activate`
+- `pip3 install --user -r requirements.txt`
 # Known bugs:
 - Building database is only available once per application instance. 
 # Credits:

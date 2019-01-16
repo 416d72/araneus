@@ -39,7 +39,6 @@ class Main(QMainWindow):
         Checks if the database is empty and prompt the user to build it if empty.
         :return: bool
         """
-        db.create()
         if not db.fetch_all():
             self.search_bar.setEnabled(0)
             self.search_btn.setEnabled(0)

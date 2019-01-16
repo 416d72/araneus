@@ -12,37 +12,10 @@ class Connection:
     mlocate_db = '/var/lib/mlocate/mlocate.db'
     mlocate_txt = config_dir + 'mlocate.txt'
     std_db = config_dir + 'database'
-    tmp_db = config_dir + 'temporary_database'
+    tmp_db = config_dir + 'temp_database'
 
     def __init__(self):
-        self.create()
-
-    def create(self):
-        """
-        Creates the sqlite3 file
-        :return: bool
-        """
-        try:
-            """
-            Create a new database with default table and columns
-            """
-            con = sqlite3.connect(self.std_db)
-            cursor = con.cursor()
-            cursor.execute("CREATE TABLE IF NOT EXISTS `data` "
-                           "("
-                           "`id` INTEGER PRIMARY KEY AUTOINCREMENT, "
-                           "`name` TEXT,"
-                           "`size` TEXT,"
-                           "`location` TEXT,"
-                           "`modified` TEXT,"
-                           "`accessed` TEXT,"
-                           "`type` TEXT"
-                           "); ")
-            con.commit()
-            con.close()
-            return True
-        except Exception:
-            return Exception
+        self.create_tmp()
 
     def create_tmp(self):
         """
@@ -50,25 +23,34 @@ class Connection:
         :return: bool
         """
         try:
-            """
-            Create a new temporary database with default table and columns
-            """
             con = sqlite3.connect(self.tmp_db)
             cursor = con.cursor()
-            cursor.execute("CREATE TABLE IF NOT EXISTS `data` "
+            cursor.execute("CREATE TABLE IF NOT EXISTS `directories` "
                            "("
+                           "`id` INTEGER PRIMARY KEY AUTOINCREMENT,"
                            "`name` TEXT,"
                            "`size` TEXT,"
                            "`location` TEXT,"
                            "`modified` TEXT,"
+                           "`accessed` TEXT"
+                           "); ")
+            con.commit()
+            cursor.execute("CREATE TABLE IF NOT EXISTS `files` "
+                           "("
+                           "`id` INTEGER PRIMARY KEY AUTOINCREMENT,"
+                           "`name` TEXT,"
+                           "`size` TEXT,"
+                           "`location` INT,"
+                           "`modified` TEXT,"
                            "`accessed` TEXT,"
-                           "`type` TEXT"
+                           "`type` TEXT,"
+                           "FOREIGN KEY(`location`) REFERENCES `directories`(`id`)"
                            "); ")
             con.commit()
             con.close()
             return True
-        except Exception:
-            return Exception
+        except sqlite3.Error as e:
+            return e
 
     def get(self, search_term):
         """
@@ -82,8 +64,8 @@ class Connection:
             command = "SELECT * FROM `data` WHERE `name` LIKE ?"
             cursor.execute(command, ("%" + search_term + "%",))
             return cursor.fetchall()
-        except:
-            return Exception
+        except sqlite3.Error as e:
+            return e
 
     def fetch_all(self):
         try:
@@ -92,16 +74,5 @@ class Connection:
             command = "SELECT * FROM `data`"
             cursor.execute(command)
             return cursor.fetchall()
-        except Exception:
-            return Exception
-
-    def drop(self):
-        try:
-            con = sqlite3.connect(self.std_db)
-            cursor = con.cursor()
-            cursor.execute("DROP TABLE `data`")
-            con.commit()
-            con.close()
-            return True
-        except Exception:
-            return Exception
+        except sqlite3.Error as e:
+            return e
