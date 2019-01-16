@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
-import sqlite3
 from magic import from_file
+
 from Araneus.connection import *
 
 
@@ -42,39 +42,74 @@ class Database(Connection):
         """
         try:
             os.system(f'pkexec bash -c "updatedb && strings {self.mlocate_db} > {self.mlocate_txt}"')
+            # TODO: add qt support
             super().create_tmp()
             self.move_tmp_db()
             self.empty_txt()
         except OSError as e:
             return e
 
-    def fill_db(self):
+    def fill(self):
         try:
             with open(self.mlocate_txt, 'r') as file:
                 elements = file.read().split()
+        except IOError as e:
+            return e
+        try:
             con = sqlite3.connect(self.tmp_db)
             cursor = con.cursor()
             cursor.execute("PRAGMA synchronous = OFF")
             cursor.execute("BEGIN TRANSACTION")
-            last_id = 0
-            for item in elements:
-                if item.startswith('/'):  # It's a directory
-                    cursor.execute("INSERT INTO `directories` (`name`,`size`,`location`,`modified`,`accessed`) VALUES"
-                                   "(?,?,?,?,?)", [item.split('/')[-1], None, item, None, None])
-                    last_id = cursor.lastrowid
-                else:  # It's a file
-                    if last_id != 0:  # At least one directory has been already inserted
-                        cursor.execute(
-                            "INSERT INTO `files` (`name`,`size`,`location`,`modified`,`accessed`,`type`) VALUES"
-                            "(?,?,?,?,?,?)", [item, None, last_id, None, None, None])
-            cursor.execute("END TRANSACTION")
+            last = 0
+            path = ''
+            for index, item in enumerate(elements[:3200]):
+                if os.path.isdir(item):  # It's a directory
+                    path = item
+                    properties = os.stat(item)
+                    cursor.execute(
+                        "INSERT INTO `directories` (`name`,`location`,`size`,`modified`,`accessed`) "
+                        "VALUES (?,?,?,?,?)",
+                        [item.split('/')[-1],
+                         item,
+                         convert_size(properties.st_size),
+                         convert_time(properties.st_mtime),
+                         convert_time(properties.st_atime)])
+                    last = cursor.lastrowid
+                else:
+                    if last is not 0:
+                        location = f"{path}/{item}"
+                        if os.path.isfile(location):
+                            try:
+                                properties = os.stat(location)
+                                file_type = from_file(location, mime=True)
+                            except IsADirectoryError:
+                                cursor.execute("INSERT INTO `directories` "
+                                               "(`name`,`location`,`size`,`modified`,`accessed`) "
+                                               "VALUES (?,?,?,?,?)",
+                                               [item, location,
+                                                convert_size(properties.st_size),
+                                                convert_time(properties.st_mtime),
+                                                convert_time(properties.st_atime)]
+                                               )
+                                last = cursor.lastrowid
+                                continue
+                            except PermissionError:
+                                continue
+                            finally:
+                                cursor.execute("INSERT INTO `files` (`parent`,`name`,`location`,`size`,`modified`,"
+                                               "`accessed`,`type`) VALUES (?,?,?,?,?,?,?)",
+                                               [item, location,
+                                                convert_size(properties.st_size),
+                                                convert_time(properties.st_mtime),
+                                                convert_time(properties.st_atime),
+                                                file_type])
+            cursor.execute('END TRANSACTION')
             con.commit()
             con.close()
-
         except sqlite3.Error as e:
             return e
-        except IOError as e:
-            return e
+        finally:
+            return True
 
     def move_tmp_db(self):
         try:
@@ -90,3 +125,7 @@ class Database(Connection):
                 file.write('')
         except IOError as e:
             return e
+
+
+d = Database()
+d.fill()
