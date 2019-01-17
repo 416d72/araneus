@@ -44,6 +44,7 @@ class Database(Connection):
             os.system(f'pkexec bash -c "updatedb && strings {self.mlocate_db} > {self.mlocate_txt}"')
             # TODO: add qt support
             super().create_tmp()
+            self.fill()
             self.move_tmp_db()
             self.empty_txt()
         except OSError as e:
@@ -62,7 +63,7 @@ class Database(Connection):
             cursor.execute("BEGIN TRANSACTION")
             last = 0
             path = ''
-            for index, item in enumerate(elements[:3200]):
+            for index, item in enumerate(elements[:20500]):
                 if os.path.isdir(item):  # It's a directory
                     path = item
                     properties = os.stat(item)
@@ -98,7 +99,7 @@ class Database(Connection):
                             finally:
                                 cursor.execute("INSERT INTO `files` (`parent`,`name`,`location`,`size`,`modified`,"
                                                "`accessed`,`type`) VALUES (?,?,?,?,?,?,?)",
-                                               [item, location,
+                                               [last, item, location,
                                                 convert_size(properties.st_size),
                                                 convert_time(properties.st_mtime),
                                                 convert_time(properties.st_atime),
@@ -106,10 +107,9 @@ class Database(Connection):
             cursor.execute('END TRANSACTION')
             con.commit()
             con.close()
+            return True
         except sqlite3.Error as e:
             return e
-        finally:
-            return True
 
     def move_tmp_db(self):
         try:
@@ -127,5 +127,8 @@ class Database(Connection):
             return e
 
 
-d = Database()
-d.fill()
+if __name__ == '__main__':
+    start = time()
+    d = Database()
+    fill = d.fill()
+    print(f"Processed finished in {time() - start:.3f} seconds")
