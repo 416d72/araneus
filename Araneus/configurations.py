@@ -1,6 +1,7 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 import configparser
+
 from Araneus.helpers import *
 
 config = configparser.ConfigParser()
