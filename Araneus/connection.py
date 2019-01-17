@@ -10,9 +10,14 @@ class Connection:
     """
     Manages connection to the sqlite3 database
     """
+    # updatedb.conf
+    updatedb_conf = os.path.abspath('/etc/updatedb.conf')
+    updatedb_conf_bak = updatedb_conf + '.BAK'
+    # mlocate.db
     mlocate_db = config_dir + 'mlocate.db'
     mlocate_txt = config_dir + 'mlocate.txt'
-    std_db = config_dir + 'database'
+    # database
+    std_db = config_dir + 'araneus.db'
     tmp_db = config_dir + 'temp_database'
 
     def __init__(self):
