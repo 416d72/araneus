@@ -1,6 +1,8 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 import configparser
+import re
+from shutil import copy2
 
 from Araneus.helpers import *
 
@@ -86,8 +88,8 @@ class Configurations:
                     if not nconfig.has_option(section, key):
                         self.reset()
             return True
-        except Exception:
-            return False
+        except configparser.Error as e:
+            return e
 
     def get_option(self, section: str, option: str, method: str = 'str'):
         """
@@ -126,3 +128,60 @@ class Configurations:
             return self.get_option(section, option)
         except ValueError:
             return ValueError("Error occurred while changing preferences")
+
+
+class UpdatedbConfigurations:
+    def __init__(self):
+        self._conf_file = os.path.abspath('/etc/updatedb.conf')
+        self._tmp_file = os.path.abspath('/tmp/Araneus_updatedb.conf')
+        self._prefix = 'PRUNEPATHS'
+        self._excludes = ''
+        self._read()
+
+    def _read(self):
+        try:
+            with open(self._conf_file, 'r') as file:
+                lines = file.readlines()
+                for line in lines:
+                    if line.startswith(self._prefix):
+                        self._excludes = re.sub(f'({self._prefix})|=|\'|"', '', line).strip()
+                    else:
+                        raise IOError('Could not find Excludes section from \'updatedb.conf\' file')
+        except FileNotFoundError as e:
+            return e
+        except PermissionError as e:
+            return e
+        except IOError as e:
+            return e
+
+    def toggle(self, include: bool):
+        """
+        Either include hidden files or exclude them
+        :param include:
+        :return:
+        """
+        spell = '.*/\..*'  # Like Harry Potter's spells
+        if include:
+            if spell in self._excludes:
+                self._excludes = self._excludes.replace(spell, '')
+        else:
+            if spell not in self._excludes:
+                self._excludes += f" {spell} "
+        return self._create_temp()
+
+    def _create_temp(self):
+        try:
+            copy2(self._conf_file, self._tmp_file)
+            with open(self._tmp_file, 'r') as tmp_file:
+                lines = tmp_file.readlines()
+            for index, line in enumerate(lines):
+                if line.startswith(self._prefix):
+                    lines[index] = f"{self._prefix} = '{self._excludes}'"
+                    break
+            with open(self._tmp_file, 'w') as tmp_file:
+                tmp_file.writelines(lines)
+            return self._tmp_file
+        except PermissionError as e:
+            return e
+        except FileNotFoundError as e:
+            return e

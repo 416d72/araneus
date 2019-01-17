@@ -1,6 +1,5 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
-from shutil import copy2
 from subprocess import Popen, PIPE
 from time import time
 
@@ -15,20 +14,9 @@ class Database(Connection):
     if config.get_option('DATABASE', 'min_size_true', 'bool'):
         min_size = config.get_option('DATABASE', 'min_size', 'int') * 1024
     hidden = config.get_option('SEARCH', 'show_hidden_files', 'bool')
-    mechanism = config.get_option('ADVANCED', 'indexing_mechanism').lower()
-    target = os.path.abspath(
-        os.path.expanduser('~') + '/Dev/')  # Currently only user's home folder will be indexed
 
     def __init__(self):
-        """
-        Calling a system command to get the total number of directories in target and build an algorithm to
-        update the progress bar in real time
-        """
         super().__init__()
-        # Linux way
-        # command = 'cd %s ; ls -1R | grep ^d | wc' % self.target
-        # process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        # total_dirs = float(process.communicate()[0].decode("utf-8").split()[0])
 
     def get_total_directories(self):
         """
@@ -38,6 +26,14 @@ class Database(Connection):
         with open(self.mlocate_txt, 'r') as file:
             elements = file.readlines()
         return len(elements)
+
+    def hidden_files(self):
+        """
+        Handles hidden files based on user preferences
+        :return:
+        """
+        u = UpdatedbConfigurations()
+        return u.toggle(include=self.hidden)
 
     def build(self):
         """
@@ -52,11 +48,10 @@ class Database(Connection):
                 which = Popen(['which', tool], stdout=PIPE)
                 found = which.communicate()[0]
                 if found:
-                    os.system(f'{tools.get(tool)} "updatedb -l 0 {scanned_dirs} -o {self.mlocate_db} && '
+                    os.system(f'{tools.get(tool)} "mv {self} updatedb -l 0 {scanned_dirs} -o {self.mlocate_db} && '
                               f'strings {self.mlocate_db} > {self.mlocate_txt}"')
                 else:
                     return OSError("Couldn't find suitable GUI tool to execute certain commands with root permissions!")
-            super().create_tmp()
             self.fill()
             self.move_tmp_db()
             self.empty_txt()
