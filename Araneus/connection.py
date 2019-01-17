@@ -10,7 +10,7 @@ class Connection:
     """
     Manages connection to the sqlite3 database
     """
-    mlocate_db = '/var/lib/mlocate/mlocate.db'
+    mlocate_db = config_dir + 'mlocate.db'
     mlocate_txt = config_dir + 'mlocate.txt'
     std_db = config_dir + 'database'
     tmp_db = config_dir + 'temp_database'

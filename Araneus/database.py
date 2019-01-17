@@ -1,5 +1,9 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
+from shutil import copy2
+from subprocess import Popen, PIPE
+from time import time
+
 from magic import from_file
 
 from Araneus.connection import *
@@ -41,8 +45,15 @@ class Database(Connection):
         :return: mix
         """
         try:
-            os.system(f'pkexec bash -c "updatedb && strings {self.mlocate_db} > {self.mlocate_txt}"')
-            # TODO: add qt support
+            scanned_dirs = '-U ~'
+            # Choosing the right tool:
+            tools = {'pkexec': 'pkexec bash -c', 'kdesu': 'kdesu -c', 'kdesudo': 'kdesudo -c'}
+            for tool in tools:
+                which = Popen(['which', tool], stdout=PIPE)
+                found = which.communicate()[0]
+                if found:
+                    os.system(f'{tools.get(tool)} "updatedb -l 0 {scanned_dirs} -o {self.mlocate_db} && '
+                              f'strings {self.mlocate_db} > {self.mlocate_txt}"')
             super().create_tmp()
             self.fill()
             self.move_tmp_db()
@@ -63,7 +74,7 @@ class Database(Connection):
             cursor.execute("BEGIN TRANSACTION")
             last = 0
             path = ''
-            for index, item in enumerate(elements[:20500]):
+            for item in elements:
                 if os.path.isdir(item):  # It's a directory
                     path = item
                     properties = os.stat(item)
@@ -130,5 +141,5 @@ class Database(Connection):
 if __name__ == '__main__':
     start = time()
     d = Database()
-    fill = d.fill()
+    fill = d.build()
     print(f"Processed finished in {time() - start:.3f} seconds")
