@@ -54,6 +54,8 @@ class Database(Connection):
                 if found:
                     os.system(f'{tools.get(tool)} "updatedb -l 0 {scanned_dirs} -o {self.mlocate_db} && '
                               f'strings {self.mlocate_db} > {self.mlocate_txt}"')
+                else:
+                    return OSError("Couldn't find suitable GUI tool to execute certain commands with root permissions!")
             super().create_tmp()
             self.fill()
             self.move_tmp_db()
