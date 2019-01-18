@@ -27,7 +27,7 @@ class Database(Connection):
             elements = file.readlines()
         return len(elements)
 
-    def hidden_files(self):
+    def _hidden_files(self):
         """
         Handles hidden files based on user preferences
         :return:
@@ -41,14 +41,13 @@ class Database(Connection):
         :return: mix
         """
         try:
-            self.password_kit()
-            self.fill()
+            self._which()
             self.move_tmp_db()
-            self.empty_txt()
+            self._empty_txt()
         except OSError as e:
             return e
 
-    def password_kit(self):
+    def _which(self):
         """
         Choosing any available GUI password prompt toolkit
         :return:
@@ -58,14 +57,14 @@ class Database(Connection):
             which = Popen(['which', tool], stdout=PIPE)
             found = which.communicate()[0]
             if found:
-                self.os_build(tools.get(tool))
+                self._build(tools.get(tool))
                 break
             else:
                 return OSError("Couldn't find suitable GUI tool to execute certain commands with root permissions!")
 
-    def os_build(self, password_tool):
+    def _build(self, password_tool):
         try:
-            updated_conf_file = self.hidden_files()
+            updated_conf_file = self._hidden_files()
             scanned_dirs = os.path.expanduser('~')
             os.system(f'{password_tool} '  # GUI password prompt..
                       f'"cp {self.updatedb_conf} {self.updatedb_conf_bak} && '  # Backup old conf file
@@ -79,7 +78,7 @@ class Database(Connection):
         except OSError as e:
             return e
 
-    def fill(self):
+    def _fill(self):
         try:
             with open(self.mlocate_txt, 'r') as file:
                 elements = file.read().split()
@@ -148,7 +147,7 @@ class Database(Connection):
         except IOError as e:
             return e
 
-    def empty_txt(self):
+    def _empty_txt(self):
         try:
             with open(self.mlocate_txt, 'w') as file:
                 file.write('')
