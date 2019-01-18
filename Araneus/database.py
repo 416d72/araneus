@@ -35,26 +35,47 @@ class Database(Connection):
         u = UpdatedbConfigurations()
         return u.toggle(include=self.hidden)
 
-    def build(self):
+    def automate(self):
         """
         Build a new database
         :return: mix
         """
         try:
-            scanned_dirs = '-U ~'
-            # Choosing the right tool:
-            tools = {'pkexec': 'pkexec bash -c', 'kdesu': 'kdesu -c', 'kdesudo': 'kdesudo -c'}
-            for tool in tools:
-                which = Popen(['which', tool], stdout=PIPE)
-                found = which.communicate()[0]
-                if found:
-                    os.system(f'{tools.get(tool)} "mv {self} updatedb -l 0 {scanned_dirs} -o {self.mlocate_db} && '
-                              f'strings {self.mlocate_db} > {self.mlocate_txt}"')
-                else:
-                    return OSError("Couldn't find suitable GUI tool to execute certain commands with root permissions!")
+            self.password_kit()
             self.fill()
             self.move_tmp_db()
             self.empty_txt()
+        except OSError as e:
+            return e
+
+    def password_kit(self):
+        """
+        Choosing any available GUI password prompt toolkit
+        :return:
+        """
+        tools = {'pkexec': 'pkexec bash -c', 'kdesu': 'kdesu -c', 'kdesudo': 'kdesudo -c'}
+        for tool in tools:
+            which = Popen(['which', tool], stdout=PIPE)
+            found = which.communicate()[0]
+            if found:
+                self.os_build(tools.get(tool))
+                break
+            else:
+                return OSError("Couldn't find suitable GUI tool to execute certain commands with root permissions!")
+
+    def os_build(self, password_tool):
+        try:
+            updated_conf_file = self.hidden_files()
+            scanned_dirs = os.path.expanduser('~')
+            os.system(f'{password_tool} '  # GUI password prompt..
+                      f'"cp {self.updatedb_conf} {self.updatedb_conf_bak} && '  # Backup old conf file
+                      f'cp {updated_conf_file} {self.updatedb_conf} && '  # Copy the new generated file
+                      f'updatedb -l 0 {scanned_dirs} -o {self.mlocate_db} && '  # Update database
+                      f'strings {self.mlocate_db} > {self.mlocate_txt}"')  # Extract database to text file
+        except FileNotFoundError as e:
+            return e
+        except PermissionError as e:
+            return e
         except OSError as e:
             return e
 
@@ -138,5 +159,5 @@ class Database(Connection):
 if __name__ == '__main__':
     start = time()
     d = Database()
-    fill = d.build()
+    print(d.automate())
     print(f"Processed finished in {time() - start:.3f} seconds")
