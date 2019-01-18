@@ -40,10 +40,14 @@ class Configurations:
         """
         if not os.path.exists(config_dir):
             try:
+                if not os.path.exists(os.path.expanduser('~') + '/.config'):
+                    os.mkdir(os.path.expanduser('~') + '/.config')
                 os.mkdir(config_dir)
                 return True
-            except ValueError:
-                return ValueError
+            except PermissionError as e:
+                return e
+            except OSError as e:
+                return e
         return True
 
     def create_config_file(self):
@@ -135,7 +139,7 @@ class UpdatedbConfigurations:
         self._conf_file = os.path.abspath('/etc/updatedb.conf')
         self._tmp_file = os.path.abspath('/tmp/Araneus_updatedb.conf')
         self._prefix = 'PRUNEPATHS'
-        self._excludes = ''
+        self._excludes = ""
         self._read()
 
     def _read(self):
@@ -143,10 +147,8 @@ class UpdatedbConfigurations:
             with open(self._conf_file, 'r') as file:
                 lines = file.readlines()
                 for line in lines:
-                    if line.startswith(self._prefix):
-                        self._excludes = re.sub(f'({self._prefix})|=|\'|"', '', line).strip()
-                    else:
-                        raise IOError('Could not find Excludes section from \'updatedb.conf\' file')
+                    if self._prefix in line:
+                        self._excludes = re.sub(f'({self._prefix})|=|\'|"|', '', line).strip()
         except FileNotFoundError as e:
             return e
         except PermissionError as e:
@@ -176,7 +178,7 @@ class UpdatedbConfigurations:
                 lines = tmp_file.readlines()
             for index, line in enumerate(lines):
                 if line.startswith(self._prefix):
-                    lines[index] = f"{self._prefix} = '{self._excludes}'"
+                    lines[index] = f"{self._prefix} = \"{self._excludes}\""
                     break
             with open(self._tmp_file, 'w') as tmp_file:
                 tmp_file.writelines(lines)
