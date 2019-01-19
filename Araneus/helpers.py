@@ -2,7 +2,6 @@
 # LICENSE: see Araneus/LICENSE
 import os
 import sys
-from datetime import datetime
 
 pid_file = '/tmp/Araneus.lock'
 config_dir = os.path.expanduser('~') + '/.config/Araneus/'
@@ -52,15 +51,6 @@ def load_animation(name: str):
     return str(os.path.abspath(os.getcwd()) + '/UI/icons/animations/{}.svg'.format(name))
 
 
-def convert_time(timestamp: int) -> str:
-    """
-    Converts UNIX timestamp to human readable date-time format
-    :param timestamp:
-    :return: str
-    """
-    return datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-
-
 def convert_size(size: int) -> str:
     """
     Convert size from Bytes to KB,MB,GB,TB.
@@ -70,14 +60,14 @@ def convert_size(size: int) -> str:
     if size == 0:
         return ''
     elif size < 1024:
-        return '%d Bytes' % size
+        return f'{size} bytes'
     power = 2 ** 10
     n = 0
     d = {0: 'Bytes', 1: 'KB', 2: 'MB', 3: 'GB', 4: 'TB'}
     while size >= power:
         size /= power
         n += 1
-    return "%.2f " % round(size, 2) + d[n]
+    return f"{size:.2f} {d[n]}"
 
 
 if __name__ == "__main__":
