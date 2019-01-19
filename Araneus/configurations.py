@@ -1,7 +1,7 @@
 # -*- coding: utf-8; -*-
 # LICENSE: see Araneus/LICENSE
 import configparser
-import re
+from re import sub
 from shutil import copy2
 
 from Araneus.helpers import *
@@ -148,7 +148,7 @@ class UpdatedbConfigurations:
                 lines = file.readlines()
                 for line in lines:
                     if self._prefix in line:
-                        self._excludes = re.sub(f'({self._prefix})|=|\'|"|', '', line).strip()
+                        self._excludes = sub(f'({self._prefix})|=|\'|"|', '', line).strip()
         except FileNotFoundError as e:
             return e
         except PermissionError as e:
@@ -158,7 +158,7 @@ class UpdatedbConfigurations:
 
     def toggle(self, include: bool):
         """
-        Either include hidden files or exclude them
+        Include/Exclude hidden files
         :param include:
         :return:
         """

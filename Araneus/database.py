@@ -17,6 +17,7 @@ class Database(Connection):
 
     def __init__(self):
         super().__init__()
+        self.target = os.path.expanduser('~')
 
     def get_total_directories(self):
         """
@@ -42,6 +43,7 @@ class Database(Connection):
         """
         try:
             self._which()
+            self._fill()
             self.move_tmp_db()
             self._empty_txt()
         except OSError as e:
@@ -65,12 +67,12 @@ class Database(Connection):
     def _build(self, password_tool):
         try:
             updated_conf_file = self._hidden_files()
-            scanned_dirs = os.path.expanduser('~')
-            os.system(f'{password_tool} '  # GUI password prompt..
-                      f'"cp {self.updatedb_conf} {self.updatedb_conf_bak} && '  # Backup old conf file
+            os.system(f'{password_tool} "'  # GUI password prompt..
+                      f'cp {self.updatedb_conf} {self.updatedb_conf_bak} && '  # Backup old conf file
                       f'cp {updated_conf_file} {self.updatedb_conf} && '  # Copy the new generated file
-                      f'updatedb -l 0 {scanned_dirs} -o {self.mlocate_db} && '  # Update database
-                      f'strings {self.mlocate_db} > {self.mlocate_txt}"')  # Extract database to text file
+                      f'updatedb -l 0 -U {self.target} -o {self.mlocate_db} && '  # Update database
+                      f'strings {self.mlocate_db} > {self.mlocate_txt}'  # Extract database to text file
+                      f'"')
         except FileNotFoundError as e:
             return e
         except PermissionError as e:
@@ -78,60 +80,59 @@ class Database(Connection):
         except OSError as e:
             return e
 
-    def _fill(self):
+    def _read_txt(self):
         try:
             with open(self.mlocate_txt, 'r') as file:
-                elements = file.read().split()
+                elements = file.read().split('\n')[2:]
+            # with open(self.updatedb_conf, 'r') as file:
+            #     number_of_prefix = sum(len(findall('"([^"]*)"', line)[0].split()) for line in file.readlines())
+            result = []
+            for i, line in enumerate(elements):
+                if line == self.target:
+                    result = elements[i:]
+                    break
+            # return elements[number_of_prefix - 2:75]
+            return result
         except IOError as e:
             return e
+
+    def _fill(self):
         try:
+            elements = self._read_txt()
             con = sqlite3.connect(self.tmp_db)
             cursor = con.cursor()
             cursor.execute("PRAGMA synchronous = OFF")
             cursor.execute("BEGIN TRANSACTION")
-            last = 0
             path = ''
+            last = 0
             for item in elements:
-                if os.path.isdir(item):  # It's a directory
-                    path = item
-                    properties = os.stat(item)
-                    cursor.execute(
-                        "INSERT INTO `directories` (`name`,`location`,`size`,`modified`,`accessed`) "
-                        "VALUES (?,?,?,?,?)",
-                        [item.split('/')[-1],
-                         item,
-                         convert_size(properties.st_size),
-                         convert_time(properties.st_mtime),
-                         convert_time(properties.st_atime)])
-                    last = cursor.lastrowid
-                else:
-                    if last is not 0:
-                        location = f"{path}/{item}"
-                        if os.path.isfile(location):
-                            try:
-                                properties = os.stat(location)
-                                file_type = from_file(location, mime=True)
-                            except IsADirectoryError:
-                                cursor.execute("INSERT INTO `directories` "
-                                               "(`name`,`location`,`size`,`modified`,`accessed`) "
-                                               "VALUES (?,?,?,?,?)",
-                                               [item, location,
-                                                convert_size(properties.st_size),
-                                                convert_time(properties.st_mtime),
-                                                convert_time(properties.st_atime)]
-                                               )
-                                last = cursor.lastrowid
-                                continue
-                            except PermissionError:
-                                continue
-                            finally:
-                                cursor.execute("INSERT INTO `files` (`parent`,`name`,`location`,`size`,`modified`,"
-                                               "`accessed`,`type`) VALUES (?,?,?,?,?,?,?)",
-                                               [last, item, location,
-                                                convert_size(properties.st_size),
-                                                convert_time(properties.st_mtime),
-                                                convert_time(properties.st_atime),
-                                                file_type])
+                try:
+                    location = f"{path}/{item}"
+                    if os.path.isdir(item):  # It's a directory
+                        properties = os.stat(item)
+                        cursor.execute(
+                            "INSERT INTO `directories` (`name`,`location`,`size`,`modified`,`accessed`) "
+                            "VALUES (?,?,?,datetime(?),datetime(?))",
+                            [location[location.rfind('/'):],
+                             location,
+                             properties.st_size,
+                             properties.st_mtime,
+                             properties.st_atime])
+                        path = item
+                        last = cursor.lastrowid
+                    elif os.path.isfile(location):
+                        properties = os.stat(location)
+                        file_type = from_file(location, mime=True)
+                        cursor.execute("INSERT INTO `files` "
+                                       "(`parent`,`name`,`location`,`size`,`modified`,`accessed`,`type`) "
+                                       "VALUES (?,?,?,?,datetime(?),datetime(?),?)",
+                                       [last, item, location,
+                                        properties.st_size,
+                                        properties.st_mtime,
+                                        properties.st_atime,
+                                        file_type])
+                except PermissionError:
+                    continue
             cursor.execute('END TRANSACTION')
             con.commit()
             con.close()
@@ -158,5 +159,6 @@ class Database(Connection):
 if __name__ == '__main__':
     start = time()
     d = Database()
+    # print(d.read_txt())
     print(d.automate())
     print(f"Processed finished in {time() - start:.3f} seconds")
