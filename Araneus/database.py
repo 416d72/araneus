@@ -84,14 +84,11 @@ class Database(Connection):
         try:
             with open(self.mlocate_txt, 'r') as file:
                 elements = file.read().split('\n')[2:]
-            # with open(self.updatedb_conf, 'r') as file:
-            #     number_of_prefix = sum(len(findall('"([^"]*)"', line)[0].split()) for line in file.readlines())
             result = []
             for i, line in enumerate(elements):
                 if line == self.target:
                     result = elements[i:]
                     break
-            # return elements[number_of_prefix - 2:75]
             return result
         except IOError as e:
             return e
@@ -105,7 +102,7 @@ class Database(Connection):
             cursor.execute("BEGIN TRANSACTION")
             path = ''
             last = 0
-            for item in elements:
+            for item in elements[:100]:
                 try:
                     location = f"{path}/{item}"
                     if os.path.isdir(item):  # It's a directory
