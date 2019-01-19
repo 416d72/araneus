@@ -3,5 +3,6 @@
 
 int main()
 {
+	printf("Hello from vscode\n");
     return 0;
 }
