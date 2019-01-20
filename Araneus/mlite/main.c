@@ -1,18 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+int tblsum(int *table,int table_size);
 int main()
 {
     srand(time(NULL));
-    int index = 9;
+    int index = 130;
     int table[index];
     for (int i = 0;i<index;i++)
     {
-        table[i] = rand()%(9999);
+        table[i] = rand()%(100);
     }
-    for (int i = 0; i<index;i++)
-    {
-        printf("Table cell no.%d reserves location : %p and has value : %d\n",i,&table[i],table[i]);
-    }
+    int result = tblsum(table,index);
+    printf("Table has %d rows, concatenated at %d\n",index,result);
     return 1;
+}
+int tblsum(int *table,int table_size)
+{
+    int result = 0;
+    for (int i = 0; i < table_size; i++)
+    {
+        result += table[i];
+    }
+    return result;
 }
