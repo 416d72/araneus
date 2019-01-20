@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-//int square(int value);
+#include <time.h>
 int main()
 {
-    // int blue = square(15);
-    // printf("Squared: %d\n", blue);
-    int table[13];
-    printf("Table starts at %d\n",table);
-    return 0;
+    srand(time(NULL));
+    int index = 9;
+    int table[index];
+    for (int i = 0;i<index;i++)
+    {
+        table[i] = rand()%(9999);
+    }
+    for (int i = 0; i<index;i++)
+    {
+        printf("Table cell no.%d reserves location : %p and has value : %d\n",i,&table[i],table[i]);
+    }
+    return 1;
 }
-
-// int square(int value)
-// {
-//     return value * value;
-// }
