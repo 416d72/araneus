@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.html": "html",
+        "*.scss": "sass",
+        "tables.h": "c"
+    }
+}
