@@ -3,5 +3,6 @@
         "*.html": "html",
         "*.scss": "sass",
         "tables.h": "c"
-    }
+    },
+    "python.pythonPath": "env/bin/python"
 }
