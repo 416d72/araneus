@@ -19,8 +19,8 @@
 # Building
 
 - `source env/bin/activate`
-- `pip3 install --user -r requirements.txt`
-- `cd Araneus`
+- `pip install -r requirements.txt`
+- `cd Araneus/`
 
 # Credits
 
