@@ -4,7 +4,8 @@
         "*.scss": "sass",
         "tables.h": "c",
         "types.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "stdio.h": "c"
     },
     "python.pythonPath": "env/bin/python"
 }
