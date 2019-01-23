@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main()
 {
@@ -8,7 +9,7 @@ int main()
     fp = popen(cmd_line, "r");
     if (fp == NULL)
     {
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     while(fgets(line,sizeof(line)-1,fp) != NULL)
     {

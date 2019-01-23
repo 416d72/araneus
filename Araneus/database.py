@@ -64,15 +64,17 @@ class Database(Connection):
             else:
                 return OSError("Couldn't find suitable GUI tool to execute certain commands with root permissions!")
 
-    def _build(self, password_tool):
+    def _build(self, sudo: str):
         try:
             updated_conf_file = self._hidden_files()
-            os.system(f'{password_tool} "'  # GUI password prompt..
-                      f'cp {self.updatedb_conf} {self.updatedb_conf_bak} && '  # Backup old conf file
-                      f'cp {updated_conf_file} {self.updatedb_conf} && '  # Copy the new generated file
-                      f'updatedb -l 0 -U {self.target} -o {self.mlocate_db} && '  # Update database
-                      f'strings {self.mlocate_db} > {self.mlocate_txt}'  # Extract database to text file
-                      f'"')
+            cmd = Popen([f'{sudo} "'  # GUI password prompt..
+                         f'cp {self.updatedb_conf} {self.updatedb_conf_bak} && '  # Backup old conf file
+                         f'cp {updated_conf_file} {self.updatedb_conf} && '  # Copy the new generated file
+                         f'updatedb -l 0 -U {self.target} -o {self.mlocate_db} && '  # Update database
+                         f'strings {self.mlocate_db} > {self.mlocate_txt}'  # Extract database to text file
+                         f'"'], stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+            if not cmd.communicate()[0]:
+                return False  # Error msg
         except FileNotFoundError as e:
             return e
         except PermissionError as e:
@@ -80,29 +82,26 @@ class Database(Connection):
         except OSError as e:
             return e
 
-    def _read_txt(self):
-        try:
-            with open(self.mlocate_txt, 'r') as file:
-                elements = file.read().split('\n')[2:]
-            result = []
-            for i, line in enumerate(elements):
-                if line == self.target:
-                    result = elements[i:]
-                    break
-            return result
-        except IOError as e:
-            return e
+    def _getline(self):
+        """
+        Get the first line to insert data starting from.
+        :return:
+        """
+        cmd = Popen([f'grep -n -m 2 {self.target} {self.mlocate_txt} | tail -n1 | cut -f1 -d:'], stdin=PIPE,
+                    stdout=PIPE, shell=True)
+        return int(cmd.communicate()[0].decode("utf8"))
 
     def _fill(self):
         try:
-            elements = self._read_txt()
+            with open(self.mlocate_txt, 'r') as file:
+                elements = file.read().split('\n')[self._getline():]
             con = sqlite3.connect(self.tmp_db)
             cursor = con.cursor()
             cursor.execute("PRAGMA synchronous = OFF")
             cursor.execute("BEGIN TRANSACTION")
             path = ''
             last = 0
-            for item in elements[:100]:
+            for item in elements:
                 try:
                     location = f"{path}/{item}"
                     if os.path.isdir(item):  # It's a directory
