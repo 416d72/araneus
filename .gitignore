@@ -86,3 +86,7 @@ env/
 pypy
 tests/_trial_temp/
 tests/_trial_temp/*
+
+# IDE's & Editors
+.vscode/
+.idea/

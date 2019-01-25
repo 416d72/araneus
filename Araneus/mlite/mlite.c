@@ -18,9 +18,9 @@ int main()
 {
     // Define variables -> will be auto fetched from argv[]
     char *target     = "/home/amr";
-    char *mlocate_db = "mlocate.db";
-    char *mlocate_txt= "mlocate.txt";
-    char *araneus_db = "araneus.db";
+    char *mlocate_db = "/home/amr/.config/Araneus/mlocate.db";
+    char *mlocate_txt= "/home/amr/.config/Araneus/mlocate.txt";
+    char *araneus_db = "/home/amr/.config/Araneus/araneus.db";
 
     // Generate text
     fill_txt_file(mlocate_db,target,mlocate_txt);
@@ -74,10 +74,10 @@ int main()
     // Setting optimisations
     rv = sqlite3_exec(db,"PRAGMA synchronous = OFF",0,0,&err_msg);
     rv = sqlite3_exec(db,"PRAGMA journal_mode = OFF",0,0,&err_msg);
-    rv = sqlite3_exec(db,"PRAGMA temp_store = MEMORY",0,0,&err_msg);
-    rv = sqlite3_exec(db,"PRAGMA page_size = 4096",0,0,&err_msg);
-    rv = sqlite3_exec(db,"PRAGMA cache_size = 16384",0,0,&err_msg);
-    rv = sqlite3_exec(db,"PRAGMA locking_mode = EXCLUSIVE",0,0,&err_msg);
+    // rv = sqlite3_exec(db,"PRAGMA temp_store = MEMORY",0,0,&err_msg);
+    // rv = sqlite3_exec(db,"PRAGMA page_size = 4096",0,0,&err_msg);
+    // rv = sqlite3_exec(db,"PRAGMA cache_size = 16384",0,0,&err_msg);
+    // rv = sqlite3_exec(db,"PRAGMA locking_mode = EXCLUSIVE",0,0,&err_msg);
 	rv = sqlite3_exec(db,"BEGIN TRANSACTION",0,0,&err_msg);
     if (rv != SQLITE_OK)
     {
