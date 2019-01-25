@@ -5,7 +5,9 @@
         "tables.h": "c",
         "types.h": "c",
         "stat.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "magic.h": "c",
+        "details.h": "c"
     },
     "python.pythonPath": "env/bin/python"
 }
