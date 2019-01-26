@@ -1,54 +1,71 @@
-#define _GNU_SOURCE
-#include <stdio.h>
 #include <stdlib.h>
-#include <dirent.h>
+#include <stdio.h>
+#include <sys/types.h>
 #include <string.h>
-#include <sys/stat.h>
+#include <errno.h>
+/* "readdir" etc. are defined here. */
+#include <dirent.h>
+/* limits.h defines "PATH_MAX". */
+#include <limits.h>
 
-void walk(char *target)
+void list_dir (const char * dir_name)
 {
-    DIR *dp;
-    struct dirent *entry;
-    struct stat st;
-    char *subdir;
+    DIR * d;
 
-    if ((dp = opendir(target)) == NULL)
-    {
-        puts("Couldn't open directory");
-        exit(EXIT_FAILURE);
+    /* Open the directory specified by "dir_name". */
+
+    d = opendir (dir_name);
+
+    /* Check it was opened. */
+    if (! d) {
+        fprintf (stderr, "Cannot open directory '%s': %s\n",
+                 dir_name, strerror (errno));
+        exit (EXIT_FAILURE);
     }
-    while ((entry = readdir(dp)) != NULL)
-    {
-        lstat(entry->d_name,&st);
-        if (st.st_mode & S_IFDIR)
-        {
+    while (1) {
+        struct dirent * entry;
+        const char * d_name;
+
+        /* "Readdir" gets subsequent entries from "d". */
+        entry = readdir (d);
+        if (! entry) {
+            /* There are no more entries in this directory, so break
+               out of the while loop. */
+            break;
+        }
+        d_name = entry->d_name;
+        /* Print the name of the file and directory. */
+	    printf ("%s/%s\n", dir_name, d_name);
+        if (entry->d_type & DT_DIR) {
+
+            /* Check that the directory is not "d" or d's parent. */
             
-            if (strcmp(entry->d_name,".") == 0 || strcmp(entry->d_name,"..") == 0 )
-            {
-                continue;
+            if (strcmp (d_name, "..") != 0 &&
+                strcmp (d_name, ".") != 0) {
+                int path_length;
+                char path[PATH_MAX];
+                path_length = snprintf (path, PATH_MAX,
+                                        "%s/%s", dir_name, d_name);
+                printf ("%s\n", path);
+                if (path_length >= PATH_MAX) {
+                    fprintf (stderr, "Path length has got too long.\n");
+                    exit (EXIT_FAILURE);
+                }
+                /* Recursively call "list_dir" with the new path. */
+                list_dir (path);
             }
-            else
-            {
-                subdir = malloc(strlen(entry->d_name)+strlen(target)+2);
-                strcpy(subdir,target);
-                strcat(strcat(subdir,"/"),entry->d_name);
-                printf("%s\n",subdir);
-                walk(subdir);
-                subdir[0] = '\0';
-                free(subdir);
-            }
-        }
-        else
-        {
-            printf("%s\n",entry->d_name);
-        }
+	    }
     }
-    closedir(dp);
+    /* After going through all the entries, close the directory. */
+    if (closedir (d)) {
+        fprintf (stderr, "Could not close '%s': %s\n",
+                 dir_name, strerror (errno));
+        exit (EXIT_FAILURE);
+    }
 }
-int main()
+
+int main ()
 {
-    char *target = "/home/amr/Videos/";
-    walk(target);
-    
+    list_dir ("/home/amr/Documents");
     return 0;
 }
