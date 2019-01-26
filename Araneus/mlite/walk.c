@@ -7,7 +7,9 @@
 #include <dirent.h>
 /* limits.h defines "PATH_MAX". */
 #include <limits.h>
-
+/*
+source: https://www.lemoda.net/c/recursive-directory/
+*/
 void list_dir (const char * dir_name)
 {
     DIR * d;
