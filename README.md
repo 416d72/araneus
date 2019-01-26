@@ -2,6 +2,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/akkk33/araneus/badge.svg?branch=master)](https://coveralls.io/github/akkk33/araneus?branch=master)
 ![Logo](Araneus/UI/icons/banner.png)
 
+**This app is under development.**
+
 # Docmentations
 
 > Instructions and examples will be available in the first release.
